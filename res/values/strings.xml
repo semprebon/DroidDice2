@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DroidDice 2</string>
+    <string name="roll">Roll</string>
+    <string name="change">Change</string>
+</resources>
