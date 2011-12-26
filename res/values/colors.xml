@@ -1,0 +1,16 @@
+<resources>
+	<color name="background_light">#FFF</color>
+	<color name="background_dark">#ff1a1a1a</color>
+	<color name="text_dark">#000</color>
+	<color name="text_light">#FFF</color>
+	<color name="focus_border">#ffff7c00</color>
+	<color name="red">#FF00</color>
+	<color name="selected_background_dark">#FF666666</color>
+	<color name="selected_light">#FF3cff49</color>
+	<color name="transparent">#0000</color>
+	<color name="db_bg_red">#3F00</color>
+	<color name="db_bg_green">#30F0</color>
+	<color name="felt">#FF6DA16D</color>
+	<color name="result_text">#fff2f23a</color>
+	<color name="felt_shadow">#ff316f31</color>
+</resources>

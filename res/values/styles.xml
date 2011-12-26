@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Theme" parent="android:Theme">
+	
+
+</style>
+<dimen name="die_value_text_size">32sp</dimen>
+<dimen name="result_text_size">48sp</dimen>
+<dimen name="focus_border_thickness">4sp</dimen>
+<dimen name="die_padding">2sp</dimen>
+</resources>
