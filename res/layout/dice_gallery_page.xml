@@ -4,15 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ImageView
+    <!-- ImageView
         android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider_color" />
+        android:background="@color/divider_color" /-->
 
     <TextView
         android:id="@+id/dice_gallery_page_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/round_scroller"
@@ -23,11 +23,11 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/text_dark" />
 
-    <ImageView
+    <!-- ImageView
         android:id="@+id/diveder2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider_color" />
+        android:background="@color/divider_color" /-->
 
     <GridView
         android:id="@+id/dice_gallery_page_grid"

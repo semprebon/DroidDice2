@@ -5,9 +5,8 @@ import org.junit.runner.RunWith
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
 
-import com.droiddice.DiceSet;
-import com.droiddice.DiceSetHelper;
 import com.droiddice.test.Distribution;
+import com.droiddice.model._
 
 @RunWith(classOf[JUnitRunner])
 class DiceSetSpec extends Spec with ShouldMatchers {

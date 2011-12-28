@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
-
+
         <TextView
             android:id="@+id/dice_set_name"
             android:layout_width="wrap_content"
@@ -24,13 +24,13 @@
             android1:text="@string/dummy_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android1:textSize="30sp" />
-        
+
         <ImageButton
             android:id="@+id/dice_set_name_edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android1:layout_gravity="center_vertical"
-            android:contentDescription="@string/editButtonDescription"
+            android:contentDescription="@string/edit_button_description"
             android:src="@drawable/ic_edit" />
 
     </LinearLayout>
@@ -39,7 +39,7 @@
         android:id="@+id/dice_set_name_edit_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+
         <EditText
             android:id="@+id/dice_set_name_edit"
             android:layout_width="wrap_content"

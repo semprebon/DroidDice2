@@ -5,8 +5,8 @@ import org.junit.runner.RunWith
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
 
-import com.droiddice.FudgeDie;
-import com.droiddice.test.Distribution;
+import com.droiddice.model._
+import com.droiddice.test.Distribution
 
 @RunWith(classOf[JUnitRunner])
 class FudgeDieSpec extends Spec with ShouldMatchers {

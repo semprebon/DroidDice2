@@ -13,4 +13,6 @@
 	<color name="felt">#FF6DA16D</color>
 	<color name="result_text">#fff2f23a</color>
 	<color name="felt_shadow">#ff316f31</color>
+	<color name="semitransparent_background">#6000</color>
+	<color name="divider_color">#F444</color>
 </resources>

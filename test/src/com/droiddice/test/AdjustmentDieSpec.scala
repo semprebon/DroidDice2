@@ -5,7 +5,7 @@ import org.junit.runner.RunWith
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
 
-import com.droiddice.AdjustmentDie;
+import com.droiddice.model._
 
 @RunWith(classOf[JUnitRunner])
 class AdjustmentDieSpec extends Spec with ShouldMatchers {

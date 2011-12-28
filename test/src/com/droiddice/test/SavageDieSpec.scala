@@ -5,8 +5,8 @@ import org.junit.runner.RunWith
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
 
-import com.droiddice.SavageDie;
-import com.droiddice.test.Distribution;
+import com.droiddice.model._
+import com.droiddice.test.Distribution
 
 @RunWith(classOf[JUnitRunner])
 class SavageDieSpec extends Spec with ShouldMatchers {

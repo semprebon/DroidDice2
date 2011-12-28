@@ -3,14 +3,15 @@
       package="com.droiddice"
       android:versionCode="1"
       android:versionName="1.0">
-    <uses-sdk android:targetSdkVersion="13" android:minSdkVersion="7"/>
+    <uses-sdk android:targetSdkVersion="14" android:minSdkVersion="7"/>
     <application android:label="@string/app_name" >
-        <activity android:name="com.droiddice.RollDiceActivity">
+        <activity android:name=".ui.RollDiceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.ChangeDiceActivity"></activity>
     </application>
 </manifest> 

@@ -1,7 +1,6 @@
 package com.droiddice.test
 
-import com.droiddice.Die;
-
+import com.droiddice.model._
 import scala.collection.mutable._
 
 class Distribution(val die: Die) {

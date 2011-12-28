@@ -90,7 +90,6 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 	def determineMeasure(measureSpec: Int, preferredSize: Int): Int = {
 	    val specMode = View.MeasureSpec.getMode(measureSpec)
 		val specSize = View.MeasureSpec.getSize(measureSpec)
-		Log.d(TAG, "determineMeasure: mode=" + specMode + "  size=" + specSize + " preferredSize=" + preferredSize)
 		return if (specMode == View.MeasureSpec.EXACTLY) preferredSize
 			else if (specMode == View.MeasureSpec.AT_MOST) Math.min(preferredSize, specSize) 
 			else preferredSize
@@ -100,7 +99,6 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 	private def measureHeight(measureSpec: Int) = determineMeasure(measureSpec, preferredHeightWithPadding)
 
 	override def onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-		Log.d(TAG, "Laying DieView out in " + (right-left) + "x" + (bottom-top))
 		super.onLayout(changed, left, top, right, bottom);
 		if (changed) {
 			loadImage(right - left, bottom - top);
@@ -111,7 +109,6 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 		val size = findBestSize(width, height)
 		if (die.imageId != null) {
 			val imageId = DieView.TYPE_TO_IMAGE_ID.get(die.imageId)
-			Log.d(TAG, "Loading image " + imageId + " for " + die.toString());
 			dieImage = BitmapFactory.decodeResource(getResources(), imageId.getOrElse(R.drawable.d6));
 		} else {
 			dieImage = null;
@@ -128,11 +125,7 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 	 * @see android.view.View#measure(int, int)
 	 */
 	override def onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-		Log.d(TAG, "preferredSIze=" + preferredSize)
-		Log.d(TAG, "width padding=" + getPaddingLeft() + ", " + getPaddingRight())
-		Log.d(TAG, "height padding=" + getPaddingTop() + ", " + getPaddingBottom())
 		setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec))
-		Log.d(TAG, "Setting measured size of DieView to " + measureWidth(widthMeasureSpec) + "x" + measureHeight(heightMeasureSpec))
 	}
 
 }

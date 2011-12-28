@@ -46,6 +46,8 @@ class DiceSet(val dice: RandomAccessSeq[Die]) extends Die {
 	}
 }
 
+class DiceSetHelper {}
+
 object DiceSetHelper {
 	val diePattern = Pattern.compile("([ds+])?(-?\\d+|F)")
     val leadingNumber = Pattern.compile("""^(\d*)(.*)$""")
