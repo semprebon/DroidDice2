@@ -19,12 +19,12 @@ import android.graphics.Rect
 
 class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs) {
 
-	var die = new SimpleDie(6)
+	var die: Die = new SimpleDie(6)
 	
 	var dieImage : Bitmap = _
 	var display: Int = DieView.DISPLAY_VALUE
 	var textPaint: TextPaint = _
-	var preferredSize = DieView.SIZE_MEDIUM
+	var preferredSize = DieView.SIZE_LARGE
 	var size = 60
 	
 
@@ -42,9 +42,7 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 		textPaint.setFakeBoldText(true);
 		var padding = getContext().getResources().getDimensionPixelSize(R.dimen.die_padding);
 		setPadding(padding, padding, padding, padding);
-		preferredSize = DieView.SIZE_MEDIUM
 		dieImage = BitmapFactory.decodeResource(getResources(), R.drawable.d6_60);
-		size = 60;
 	}
 
 	override def onDraw(canvas: Canvas) {
@@ -84,37 +82,25 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 	def preferredHeightWithPadding = preferredSize + getPaddingTop() + getPaddingBottom()
 	
 	/**
-	 * Determines the width of this view
+	 * Determines the size (width or height) given a preferred size and measureSpec
 	 * 
-	 * @param measureSpec
-	 *            A measureSpec packed into an int
-	 * @return The width of the view, honoring constraints from measureSpec
+	 * @param measureSpec A measureSpec packed into an int
+	 * @return The size, honoring constraints from measureSpec
 	 */
-	private def measureWidth(measureSpec: Int): Int = {
-		val specMode = View.MeasureSpec.getMode(measureSpec)
+	def determineMeasure(measureSpec: Int, preferredSize: Int): Int = {
+	    val specMode = View.MeasureSpec.getMode(measureSpec)
 		val specSize = View.MeasureSpec.getSize(measureSpec)
-		val result = if (specMode == View.MeasureSpec.EXACTLY) specSize else 
-			if (specMode == View.MeasureSpec.AT_MOST) Math.min(preferredWidthWithPadding, specSize) else preferredWidthWithPadding
-		return result
+		Log.d(TAG, "determineMeasure: mode=" + specMode + "  size=" + specSize + " preferredSize=" + preferredSize)
+		return if (specMode == View.MeasureSpec.EXACTLY) preferredSize
+			else if (specMode == View.MeasureSpec.AT_MOST) Math.min(preferredSize, specSize) 
+			else preferredSize
 	}
-
 	
-	/**
-	 * Determines the height of this view
-	 * 
-	 * @param measureSpec
-	 *            A measureSpec packed into an int
-	 * @return The height of the view, honoring constraints from measureSpec
-	 */
-	private def measureHeight(measureSpec: Int): Int = {
-		val specMode = View.MeasureSpec.getMode(measureSpec)
-		val specSize = View.MeasureSpec.getSize(measureSpec)
-		val result = if (specMode == View.MeasureSpec.EXACTLY) specSize else 
-			if (specMode == View.MeasureSpec.AT_MOST) Math.min(preferredHeightWithPadding, specSize) else preferredHeightWithPadding
-		return result
-	}
+	private def measureWidth(measureSpec: Int) = determineMeasure(measureSpec, preferredWidthWithPadding)
+	private def measureHeight(measureSpec: Int) = determineMeasure(measureSpec, preferredHeightWithPadding)
 
 	override def onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+		Log.d(TAG, "Laying DieView out in " + (right-left) + "x" + (bottom-top))
 		super.onLayout(changed, left, top, right, bottom);
 		if (changed) {
 			loadImage(right - left, bottom - top);
@@ -141,8 +127,12 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 	/**
 	 * @see android.view.View#measure(int, int)
 	 */
-	override def onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) = {
-		setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec));
+	override def onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+		Log.d(TAG, "preferredSIze=" + preferredSize)
+		Log.d(TAG, "width padding=" + getPaddingLeft() + ", " + getPaddingRight())
+		Log.d(TAG, "height padding=" + getPaddingTop() + ", " + getPaddingBottom())
+		setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec))
+		Log.d(TAG, "Setting measured size of DieView to " + measureWidth(widthMeasureSpec) + "x" + measureHeight(heightMeasureSpec))
 	}
 
 }

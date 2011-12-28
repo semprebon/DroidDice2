@@ -2,10 +2,9 @@ package com.droiddice.model
 
 import java.util.regex._
 
-class DiceSet(dice0: RandomAccessSeq[Die]) extends Die {
+class DiceSet(val dice: RandomAccessSeq[Die]) extends Die {
 
-    val dice = dice0
-	val count = dice.size
+    val count = dice.size
 	val spec = DiceSetHelper.specForDice(dice)
 	var name = spec
 
