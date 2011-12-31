@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android1="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dice_set_item"
+    style="@style/dice_set_item"
+    android1:layout_width="fill_parent"
+    android1:text="@string/dummy_name" >
+
+</TextView>
