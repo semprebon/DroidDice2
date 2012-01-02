@@ -14,54 +14,62 @@ import com.droiddice.model.DiceSet
  */
 trait TitleBarHandler extends Activity {
 
-  var diceSet: DiceSet = _
+	var diceSet: DiceSet = _
 
-  lazy val titleDisplay = findViewById(R.id.dice_set_name).asInstanceOf[TextView]
-  lazy val titleEdit = findViewById(R.id.dice_set_name_edit).asInstanceOf[EditText]
-  lazy val editButton = findViewById(R.id.dice_set_name_edit_button).asInstanceOf[ImageButton]
-  lazy val titleView = titleDisplay.getParent().getParent().asInstanceOf[ViewAnimator]
+	lazy val titleDisplay = findViewById(R.id.dice_set_name).asInstanceOf[TextView]
+	lazy val titleEdit = findViewById(R.id.dice_set_name_edit).asInstanceOf[EditText]
+	lazy val editButton = findViewById(R.id.dice_set_name_edit_button).asInstanceOf[ImageButton]
+	lazy val titleView = titleDisplay.getParent().getParent().asInstanceOf[ViewAnimator]
   
-  /**
-   * Associate a dice set with the title bar
-   */
-  def bind(newDiceSet: DiceSet) {
-    diceSet = newDiceSet
-    updateTitleBar()
-  }
+	/**
+	 * Associate a dice set with the title bar
+	 */
+	def bind(newDiceSet: DiceSet) {
+    	diceSet = newDiceSet
+    	updateTitleBar()
+  	}
   
-  /**
-   * Update the display with the current dice set name
-   */
-  def updateTitleBar() {
-	titleDisplay.setText(diceSet.name)
-  }
+  	/**
+  	 * Update the display with the current dice set name
+  	 */
+  	def updateTitleBar() {
+  	    if (diceSet != null) {
+  	    	titleDisplay.setText(diceSet.name)
+  	    } else {
+  	        titleDisplay.setText("No Dice")
+  	    }
+  	}
 
-  /**
-   * Install UI event handlers
-   * 
-   * There are basically two events:
-   * * when edit button is clicked, switch to edit view and enter edit mode
-   * * when user done editing, update object and switch back to display view
-   */
-  def installTitleHandlers() {
-    titleView.setInAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.grow_from_center))
-    titleView.setOutAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.shrink_to_center))
+  	val NO_EDIT = false
+  	val EDIT = true
+  	
+  	/**
+  	 * Install UI event handlers
+  	 * 
+  	 * There are basically two events:
+  	 * * when edit button is clicked, switch to edit view and enter edit mode
+  	 * * when user done editing, update object and switch back to display view
+  	 */
+  	def installTitleHandlers() {
+  	    editButton.setVisibility(View.VISIBLE)
+  		titleView.setInAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.grow_from_center))
+  		titleView.setOutAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.shrink_to_center))
     
-    editButton.setOnClickListener(new View.OnClickListener() {
-      override def onClick(view: View) {
-        titleView.showNext()
-        titleEdit.requestFocus()
-      }
-    })
+  		editButton.setOnClickListener(new View.OnClickListener() {
+  			override def onClick(view: View) {
+  				titleView.showNext()
+  				titleEdit.requestFocus()
+  			}
+  		})
     
-    titleEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-      override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
-        diceSet.name = titleEdit.getText().toString()
-        updateTitleBar()
-        titleView.showNext()
-        return false
-      }
-    })
-  }
+  		titleEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+  			override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
+  				diceSet.name = titleEdit.getText().toString()
+  				updateTitleBar()
+  				titleView.showNext()
+  				return false
+  			}
+  		})
+  	}
   
 }

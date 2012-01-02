@@ -2,21 +2,21 @@
 <ViewAnimator xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:android1="http://schemas.android.com/apk/res/android"
     android:id="@+id/dice_set_name_title_bar"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android1:background="@drawable/semitransparent_gradient"
     android:orientation="horizontal" >
 
     <LinearLayout
         android:id="@+id/dice_set_name_display_view"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
 
         <TextView
             android:id="@+id/dice_set_name"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android1:ellipsize="end"
             android1:gravity="center"
@@ -24,26 +24,27 @@
             android1:text="@string/dummy_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android1:textSize="30sp" />
-
+
         <ImageButton
             android:id="@+id/dice_set_name_edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android1:layout_gravity="center_vertical"
             android:contentDescription="@string/edit_button_description"
-            android:src="@drawable/ic_edit" />
+            android:src="@drawable/ic_edit"
+            android1:visibility="gone" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/dice_set_name_edit_view"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/dice_set_name_edit"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android1:imeOptions="actionDone"
             android1:inputType="text"

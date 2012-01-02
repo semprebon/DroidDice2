@@ -4,13 +4,14 @@ import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
-
-import com.droiddice.test.Distribution;
 import com.droiddice.model._
+import scala.collection.mutable.ArrayBuffer
 
 @RunWith(classOf[JUnitRunner])
 class DiceSetSpec extends Spec with ShouldMatchers {
 
+  // Creation Tests
+    
   describe("a die created from 's10' string") {
     var d = DiceSetHelper.singleDieFactory("s10")
     it("should create savage die") {
@@ -71,6 +72,12 @@ class DiceSetSpec extends Spec with ShouldMatchers {
     it("shouldhave no dice") {
       d.count should be(0)
     }
+    it("should have values of empty array") {
+    	d.values should be(ArrayBuffer[Int]())
+    }
+    it("should have values string of empty string") {
+        d.valuesString should be("")
+    }
   }
 
   describe("A dice set with just a -10 penalty") {
@@ -96,10 +103,17 @@ class DiceSetSpec extends Spec with ShouldMatchers {
     }
   }
 
+  // Changing a diceset
   describe("adding a d6 to a dice set with 2d6") {
     val d = new DiceSet("2d6").add("d6")
     it("should give a dice set with 3d6") {
       d.spec should be("3d6")
+    }
+  }
+  describe("adding a d6 to an empty dice set") {
+    val d = new DiceSet("").add("d6")
+    it("should give a dice set with d6") {
+      d.spec should be("d6")
     }
   }
   describe("adding an adjustment +2 to a dice set with a +1 adjustment") {
@@ -118,6 +132,18 @@ class DiceSetSpec extends Spec with ShouldMatchers {
     it("should give dice set d6+d8") {
       val d = new DiceSet("2d6+8").remove(1)
       d.spec should be("d6+8")
+    }
+  }
+  describe("adding a d6 to a dice set named Test") {
+    val d = new DiceSet("2d6", "Test").add("d6")
+    it("should give a dice set with same name") {
+      d.name should be("Test")
+    }
+  }
+  describe("removing a d6 to a dice set named Test") {
+    val d = new DiceSet("2d6", "Test").remove(1)
+    it("should give a dice set with same name") {
+      d.name should be("Test")
     }
   }
 }

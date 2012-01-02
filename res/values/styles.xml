@@ -12,4 +12,12 @@
     <item name="android:layout_height">70dp</item>
 </style>
 <dimen name="die_view_size">72dp</dimen>
+<style name="dice_set_item">
+    <item name="android:layout_width">80dp</item>
+    <item name="android:layout_height">72dp</item>
+    <item name="android:ellipsize">end</item>
+    <item name="android:lines">1</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:textSize">14sp</item>
+</style>
 </resources>

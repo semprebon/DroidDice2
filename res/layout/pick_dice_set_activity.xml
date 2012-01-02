@@ -9,8 +9,8 @@
         android:id="@+id/dice_set_selection_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-        <!-- Preview: listitem=@layout/dice_set_item -->
+        <!-- Preview: listitem=@layout/list_dice_set_item -->
 
     </ListView>
-
-</LinearLayout>
+ </LinearLayout>
+ 

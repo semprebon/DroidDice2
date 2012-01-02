@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/title_bar"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         layout="@layout/window_title" />
 
@@ -38,8 +38,46 @@
     </GridView>
 
     <LinearLayout
+        android:id="@+id/dice_set_history"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/dice_set_item_0"
+            style="@style/dice_set_item"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/dummy_name" />
+
+        <Button
+            android:id="@+id/dice_set_item_1"
+            style="@style/dice_set_item"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/dice_set_item_2"
+            style="@style/dice_set_item"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/dice_sets_selection_button"
+            style="@style/dice_set_item"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="..." />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/buttons"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
         <Button
@@ -55,7 +93,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/change" />
-
     </LinearLayout>
 
 </LinearLayout>

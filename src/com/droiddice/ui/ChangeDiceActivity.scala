@@ -7,9 +7,14 @@ import android.os.Bundle
 import android.content.Context
 import android.util.Log
 import android.view.View.OnTouchListener
-
 import com.droiddice._
 import com.droiddice.model._
+import com.droiddice.datastore.DiceSetProvider
+import android.os.AsyncTask
+import android.net.Uri
+import android.content.ContentValues
+import android.app.ProgressDialog
+import com.droiddice.datastore.DiceSetMapper
 
 class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 
@@ -30,11 +35,12 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 
 		val extras = getIntent().getExtras()
 		currentDiceSet = if (extras != null) 
-				new DiceSet(extras.get("Dice").asInstanceOf[String])
+				new DiceSet(extras.get("Dice").asInstanceOf[String], extras.get("Name").asInstanceOf[String])
 			else
 				new DiceSet("d6")
 		
 		setContentView(R.layout.change_dice_activity)
+
 		bind(currentDiceSet)
 		installTitleHandlers()
 		createCurrentSelection()
@@ -48,11 +54,55 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 	override def onBackPressed() {
 		val intent = getIntent()
 		intent.putExtra("Dice", currentDiceSet.spec)
+		intent.putExtra("Name", currentDiceSet.name)
 		setResult(Activity.RESULT_OK, intent)
-		Log.d(TAG, "Returning dice:" + currentDiceSet.spec)
-		finish()
+		
+		Log.d(TAG, "Executig async task")
+		new createOrUpdateDataStore().execute(currentDiceSet)
+		
+		//finish()
 	}
   
+    /* This should really by DiceSet, not Object; but due to bug, scala sometimes has problems 
+     * passing varargs; but works with Object... 
+     */ 
+	class createOrUpdateDataStore extends AsyncTask[Object, Void, Int] {
+	    var dialog: ProgressDialog = _
+	    
+		override protected def doInBackground(diceSets: Object*): Int = {
+			val diceSet = diceSets(0).asInstanceOf[DiceSet]
+			val values = DiceSetMapper.diceSetToValues(diceSet)
+			
+			val contentResolver = getContentResolver()
+			val uri = DiceSetProvider.CONTENT_URI
+		    Log.d(TAG, "Quering DiceSetProvider for " + currentDiceSet.name)
+			val cursor = managedQuery(uri, Array(DiceSetProvider._ID), DiceSetProvider.NAME + "=?", Array(currentDiceSet.name), null)
+			val id = if (cursor.moveToFirst()) {
+					val id = cursor.getInt(0)
+					Log.d(TAG, "Updating DiceSet " + id)
+					val itemUri = Uri.withAppendedPath(uri, id.toString())
+					getContentResolver().update(itemUri, values, null, null)
+					id
+				} else {
+					Log.d(TAG, "Adding new DiceSet " + currentDiceSet.name)
+					val itemUri = getContentResolver().insert(DiceSetProvider.CONTENT_URI, values)
+					Log.d(TAG, "Added " + itemUri)
+					itemUri.getLastPathSegment().toInt
+				}
+			return id
+		}
+		
+		override protected def onPreExecute() {
+		    dialog = ProgressDialog.show(ChangeDiceActivity.this, "Dice", "Updating...", true)
+		}
+
+		override protected def onPostExecute(result: Int) {
+			dialog.dismiss()
+		    Log.d(TAG, "Returning dice:" + currentDiceSet.spec)
+		    finish()
+		}
+	}
+
 	/**
 	 * Create view for displaying the current dice set
 	 */
@@ -75,6 +125,7 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		Log.d(TAG, "Setting up galallery")
 		val galleryView = findById[Gallery](R.id.dice_gallery)
 		val adapter = new GalleryPageViewAdapter(this, GALLERY_PAGES)
+		galleryView.setAdapter(adapter)
 	}
   
 	/**

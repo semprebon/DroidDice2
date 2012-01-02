@@ -21,7 +21,7 @@ object DiceSetProvider {
     val _ID = "_id"
     val NAME = "name"
     val SPEC = "spec"
-    val VALUES = "values"
+    val VALUES = "value"
         
     val PUBLIC_COLUMNS = Array(_ID, NAME, SPEC, VALUES)
     val DICE_SET_MIME_SUFFIX = "vnd.droidice.diceset"
@@ -37,13 +37,16 @@ object DiceSetProvider {
 
 class DiceSetProvider extends ContentProvider {
     val TAG = "DiceSetDataStore"
+    val _ID = DiceSetProvider._ID
+    val NAME = DiceSetProvider.NAME
+    val SPEC = DiceSetProvider.SPEC
+    val VALUES = DiceSetProvider.VALUES
 
     val DICE_SET_TABLE = "dice_sets"
-    val ROWID = "_id"
-
+    
     var db: SQLiteDatabase = _
     
-    val ALL_COLUMNS = Array("name", "spec", "value")
+    val ALL_COLUMNS = Array(_ID, NAME, SPEC, VALUES)
 
     /**
      * Initialize datanase
@@ -65,7 +68,7 @@ class DiceSetProvider extends ContentProvider {
         // being asked for a specific record, so set the
         // WHERE clause in our query.
         if (DiceSetProvider.URI_MATCHER.`match`(uri) == DiceSetProvider.DICE_SET_ID) {
-            builder.appendWhere("_id=" + uri.getLastPathSegment());
+            builder.appendWhere(_ID + "=" + uri.getLastPathSegment());
         }
 
         // Make the query.

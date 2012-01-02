@@ -2,13 +2,14 @@ package com.droiddice.model
 
 import java.util.regex._
 
-class DiceSet(val dice: RandomAccessSeq[Die]) extends Die {
+class DiceSet(val dice: RandomAccessSeq[Die], var name: String) extends Die {
 
     val count = dice.size
 	val spec = DiceSetHelper.specForDice(dice)
-	var name = spec
+	
+	def this(dice: RandomAccessSeq[Die]) = { this(dice, DiceSetHelper.specForDice(dice)) }
 
-	def sumDice:Int = if (dice.isEmpty) 0 else dice.map(die => die.value).reduceLeft((a,b) => a+b)
+	def sumDice:Int = if (dice.isEmpty) 0 else values.reduceLeft(_ + _)
 
     var value = sumDice
     override def display = if (dice.isEmpty) "" else sumDice.toString
@@ -21,7 +22,19 @@ class DiceSet(val dice: RandomAccessSeq[Die]) extends Die {
 	    value = sumDice
 	    value
 	}
- 
+
+	def values = dice.map(_.value)
+	
+	def valuesString = if (dice.isEmpty) "" else values.map(_.toString()).reduceLeft(_ + "," + _)
+	
+	def valuesString_=(s: String) = {
+	    if (s != null && s.length() > 0) {
+    		dice.zip(s.split(".")).foreach {
+	        	case (die, value) => die.value = value.toInt
+			}
+    	}
+	}
+	
 	def typeOf(index: Int): String = dice(index).spec
 	def apply(index: Int): Die = dice(index)
 	
@@ -29,20 +42,22 @@ class DiceSet(val dice: RandomAccessSeq[Die]) extends Die {
 	    dice.foldLeft(0) ((count, die) => if (die.spec == spec) count+1 else count)
 	}
 	
+	def canCombineAdjustment(newDie: Die): Boolean
+		= !dice.isEmpty && dice.last.isInstanceOf[AdjustmentDie] && newDie.isInstanceOf[AdjustmentDie]
+	
 	def add(newSpec: String): DiceSet = {
 	    val newDie = DiceSetHelper.dieFactory(newSpec)(0)
-	    val last = dice.last
-	    val newDice = if (newDie.isInstanceOf[AdjustmentDie] && last.isInstanceOf[AdjustmentDie]) {
-	        val adjustmentDie = new AdjustmentDie(last.value + newDie.value)
+	    val newDice = if (canCombineAdjustment(newDie)) {
+	        val adjustmentDie = new AdjustmentDie(dice.last.value + newDie.value)
 	        dice.slice(0, dice.length-1) ++ List(adjustmentDie)
 	    } else {
 	        dice ++ List(newDie)
 	    }
-	    new DiceSet(newDice)
+	    new DiceSet(newDice, name)
 	}
 	
 	def remove(index: Int): DiceSet = {
-	    new DiceSet(dice.take(index) ++ dice.drop(index+1))
+	    new DiceSet(dice.take(index) ++ dice.drop(index+1), name)
 	}
 }
 

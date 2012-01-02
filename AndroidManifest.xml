@@ -13,5 +13,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.ChangeDiceActivity"></activity>
+        <activity android:name=".ui.PickDiceSetActivity"></activity>
+        <provider android:name=".datastore.DiceSetProvider"
+            android:authorities="com.droiddice.dicesetprovider"/>
     </application>
 </manifest> 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="RollDiceActivity" default="help">
+<project name="DroidDice2" default="help">
 
     <!-- The local.properties file is created and updated by the 'android' tool.
          It contains the path to the SDK. It should *NOT* be checked into
@@ -86,5 +86,78 @@
     <!-- version-tag: custom -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 	<import file="build-scala.xml" />
+
+	<!-- Custom targets for running local (i.e., fast) model test
+	-->
+    <target name="-compile-scala-test" depends="-compile-scala"
+        description="Compiles project's .scala test files into .class files">
+        <do-only-if-manifest-hasCode elseText="hasCode = false. Skipping...">
+            <condition property="logging" value="verbose" else="none">
+                <istrue value="${verbose}" />
+            </condition>
+        	<mkdir dir="${out.absolute.dir}/test/classes"/>
+            <echo message="${scalac.banner}" level="info" taskname="scalac" />
+            <scalac
+                destdir="${out.absolute.dir}/test/classes"
+                bootclasspathref="android.target.classpath"
+                logging="${logging}" addparams="${scalac.addparams}"
+                classpath="${extensible.classpath}"
+                classpathref="jar.libs.ref">
+                <src path="test/src"/>
+                <classpath>
+                    <pathelement location="${scala-library.jar}" />
+                    <!-- include compiled resources -->
+                    <pathelement location="${out.classes.absolute.dir}" />
+                	<pathelement location="${out.absolute.dir}/test/classes" />
+                	<fileset dir="${extensible.libs.classpath}" includes="*.jar" />
+                	<fileset dir="test/lib" includes="*.jar" />
+                </classpath>
+            </scalac>
+            <!-- if the project is a library then we generate a jar file -->
+            <if condition="${project.is.library}">
+                <then>
+                    <echo>Updating library output jar file...</echo>
+                    <jar destfile="${out.library.jar.file}" update="true">
+                        <fileset dir="${out.classes.absolute.dir}" excludes="**/R.class **/R$*.class"/>
+                        <fileset dir="${source.absolute.dir}" excludes="**/*.scala" />
+                    </jar>
+                </then>
+            </if>
+
+            <!-- if the project is instrumented, intrument the classes -->
+            <if condition="${build.is.instrumented}">
+                <then>
+                    <echo>Instrumenting classes from ${out.absolute.dir}/classes...</echo>
+                    <!-- It only instruments class files, not any external libs -->
+                    <emma enabled="true">
+                        <instr verbosity="${verbosity}"
+                               mode="overwrite"
+                               instrpath="${out.absolute.dir}/classes"
+                               outdir="${out.absolute.dir}/classes">
+                        </instr>
+                        <!-- TODO: exclusion filters on R*.class and allowing custom exclusion from
+                             user defined file -->
+                    </emma>
+                </then>
+            </if>
+        </do-only-if-manifest-hasCode>
+    </target>
+
+	<target name="test-models" depends="-compile-scala-test">
+		<junit printsummary="true">
+            <classpath>
+                <pathelement location="${scala-library.jar}" />
+                <!-- include compiled resources -->
+                <pathelement location="${out.classes.absolute.dir}" />
+            	<pathelement location="${out.absolute.dir}/test/classes" />
+            	<fileset dir="${extensible.libs.classpath}" includes="*.jar" />
+            	<fileset dir="test/lib" includes="*.jar" />
+            </classpath>
+			<formatter type="plain"/>
+			<batchtest>
+                <fileset dir="${out.absolute.dir}/test/classes" includes="**/*Spec.class"/>
+			</batchtest>
+		</junit>
+	</target>
 
 </project>
