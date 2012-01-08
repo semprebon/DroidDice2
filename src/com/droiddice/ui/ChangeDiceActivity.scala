@@ -15,6 +15,10 @@ import android.net.Uri
 import android.content.ContentValues
 import android.app.ProgressDialog
 import com.droiddice.datastore.DiceSetMapper
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 
 class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 
@@ -26,7 +30,6 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		new GalleryPage("Other", Array("dF", "+1", "-1")))
       
 	var currentDiceSet: ObservableDiceSet = _
-	var gestureDetector: GestureDetector = _
   
 	/** Called when the activity is first created. */
 	override def onCreate(savedInstanceState: Bundle) {
@@ -64,6 +67,14 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		//finish()
 	}
   
+	def createBitmapOfView(view: View) : Bitmap = {
+		val bitmap = Bitmap.createBitmap(view.getWidth, view.getHeight, Bitmap.Config.ARGB_8888)
+		val canvas = new Canvas(bitmap)
+		val paint = new Paint()
+		view.draw(canvas)
+		bitmap
+	}
+	
     /* This should really by DiceSet, not Object; but due to bug, scala sometimes has problems 
      * passing varargs; but works with Object... 
      */ 
@@ -125,10 +136,12 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 	def createDiceGallery() {
 		Log.d(TAG, "Setting up galallery")
 		val galleryView = findById[Gallery](R.id.dice_gallery)
-		val adapter = new GalleryPageViewAdapter(this, GALLERY_PAGES)
+		val adapter = new GalleryPageViewAdapter(this, GALLERY_PAGES, galleryView)
+		galleryView.setSpacing(getResources().getDimension(R.dimen.gallery_spacing).toInt)
 		galleryView.setAdapter(adapter)
+		galleryView.setSelection(1)
 	}
-  
+
 	/**
 	 * This class holds all the information required to generate a gallery page
 	 */
@@ -139,7 +152,7 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 	/**
 	 * This adapter is responsible for building each page in the dice gallery 
 	 */
-	class GalleryPageViewAdapter(activity: Activity, pages: Array[GalleryPage]) 
+	class GalleryPageViewAdapter(activity: Activity, pages: Array[GalleryPage], gallery: Gallery) 
 			extends ArrayAdapter[GalleryPage](activity, 0,  pages) {
 		 
 		var itemOnTouchListener: OnTouchListener = _
@@ -160,15 +173,17 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 	    	})
 	    }
 	    
-	    /**
+		def pageViewWidth(parent: View) = 
+		    4*getResources().getDimension(R.dimen.die_view_size).toInt
+
+		/**
 	     * Assemble the view for the gallery page
 	     */
 		override def getView(position: Int, convertView : View, parent: ViewGroup): View = {
 			val pageView = if (convertView == null || !convertView.isInstanceOf[LinearLayout]) 
-					activity.getLayoutInflater().inflate(R.layout.dice_gallery_page, null) 
+					activity.getLayoutInflater().inflate(R.layout.dice_gallery_page, gallery, false) 
 				else 
 					convertView.asInstanceOf[LinearLayout]
-			Log.d(TAG, "Creating gallary page " + position)
 			val page = getItem(position)
 			val nameView = pageView.findViewById(R.id.dice_gallery_page_name).asInstanceOf[TextView]
 			nameView.setText(page.name)

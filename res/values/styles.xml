@@ -20,4 +20,7 @@
     <item name="android:singleLine">true</item>
     <item name="android:textSize">14sp</item>
 </style>
+<dimen name="gallery_margin">36dp</dimen>
+<dimen name="gallery_spacing">3dp</dimen>
+<dimen name="gallery_width">260dp</dimen>
 </resources>

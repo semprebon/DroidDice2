@@ -9,5 +9,7 @@
     <string name="dummy_name">Than: Telekinesis Activate</string>
     <dimen name="bottom_button_height">100dp</dimen>
     <string name="create">New</string>
+    <string name="move_left">&lt;</string>
+    <string name="move_right">></string>
     
 </resources>

@@ -22,12 +22,11 @@
         android:gravity="center"
         android:numColumns="4"/>
 
-    <Gallery
+    <com.droiddice.ui.GridViewGallery
         android:id="@+id/dice_gallery"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:background="@drawable/semitransparent_gradient_inverted"
         android:scrollbarFadeDuration="0"
         android:scrollbars="horizontal" />
 
