@@ -12,12 +12,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
-
+
         <TextView
             android:id="@+id/dice_set_name"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
+            android1:background="@color/db_bg_red"
             android1:ellipsize="end"
             android1:gravity="center"
             android1:singleLine="true"
@@ -31,8 +32,7 @@
             android:layout_height="wrap_content"
             android1:layout_gravity="center_vertical"
             android:contentDescription="@string/edit_button_description"
-            android:src="@drawable/ic_edit"
-            android1:visibility="gone" />
+            android:src="@drawable/ic_edit"/>
 
     </LinearLayout>
 

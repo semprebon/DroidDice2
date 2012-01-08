@@ -146,4 +146,38 @@ class DiceSetSpec extends Spec with ShouldMatchers {
       d.name should be("Test")
     }
   }
+  
+  describe("a dice set without a custom name that has been modifed") {
+      val d = new DiceSet("d6")
+      d.add("d8")
+      it("should return spec as name") {
+          d.name should be("d6+d8")
+      }
+  }
+
+  describe("a dice set with a custom name that has name set to null") {
+      val d = new DiceSet("d6", "Test")
+      d.name = null
+      it("should return spec as name") {
+          d.name should be("d6")
+      }
+  }
+
+  describe("a dice set with a custom name that has name set to blank") {
+      val d = new DiceSet("d6", "Test")
+      d.name = ""
+      it("should return spec as name") {
+          d.name should be("d6")
+      }
+  }
+  describe("a dice set with a custom name that has name set to spec") {
+      val d = new DiceSet("d6", "Test")
+      d.name = "d6"
+      describe("and then is modified") {
+          d.add("d6")
+    	  it("should return spec as name") {
+    		  d.name should be("2d6")
+    	  }
+      }
+  }
 }

@@ -93,6 +93,14 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/change" />
+
+        <Button
+            android:id="@+id/roll_activity_new_button"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/create" />
+
     </LinearLayout>
 
 </LinearLayout>

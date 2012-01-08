@@ -1,8 +1,8 @@
 package com.droiddice.model
 
-trait Die {
+trait Die extends Rollable {
 	val spec: String
-	def imageId: String = spec
+	val imageId: String = spec
 
 	var value: Int
 	def roll: Int

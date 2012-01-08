@@ -25,7 +25,7 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		new GalleryPage("Savage Worlds", Array("s4", "s6", "s8", "s10", "s20")),
 		new GalleryPage("Other", Array("dF", "+1", "-1")))
       
-	var currentDiceSet: DiceSet = _
+	var currentDiceSet: ObservableDiceSet = _
 	var gestureDetector: GestureDetector = _
   
 	/** Called when the activity is first created. */
@@ -35,13 +35,14 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 
 		val extras = getIntent().getExtras()
 		currentDiceSet = if (extras != null) 
-				new DiceSet(extras.get("Dice").asInstanceOf[String], extras.get("Name").asInstanceOf[String])
+				new ObservableDiceSet(extras.get("Dice").asInstanceOf[String], extras.get("Name").asInstanceOf[String])
 			else
-				new DiceSet("d6")
+				new ObservableDiceSet("d6", "")
 		
 		setContentView(R.layout.change_dice_activity)
 
 		bind(currentDiceSet)
+		Log.d(TAG, "should have 1 observer: " + currentDiceSet.countObservers)
 		installTitleHandlers()
 		createCurrentSelection()
 		Log.d(TAG, "calling createDiceGallery")
@@ -98,7 +99,7 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 
 		override protected def onPostExecute(result: Int) {
 			dialog.dismiss()
-		    Log.d(TAG, "Returning dice:" + currentDiceSet.spec)
+		    Log.d(TAG, "Returning dice:" + diceSet.spec)
 		    finish()
 		}
 	}
@@ -111,8 +112,8 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		selectionView.setAdapter(new DiceViewAdapter(this, currentDiceSet.dice.toArray[Die]))
 		selectionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			override def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
-				currentDiceSet = currentDiceSet.remove(position)
-				bind(currentDiceSet)
+				currentDiceSet.remove(position)
+				Log.d(TAG, "after update, text is" + titleDisplay.getText())
 				createCurrentSelection()
 			}
 		})
@@ -152,8 +153,8 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 	    	gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 	    		override def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
 	    			val die = view.asInstanceOf[DieView].die
-	    			currentDiceSet = currentDiceSet.add(die.spec)
-	    			bind(currentDiceSet)
+	    			Log.d(TAG, "adding " + die.spec)
+	    			currentDiceSet.add(die.spec)
 	    			createCurrentSelection()
 	    		}
 	    	})

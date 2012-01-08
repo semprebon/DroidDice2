@@ -2,21 +2,35 @@ package com.droiddice.model
 
 import java.util.regex._
 
-class DiceSet(val dice: RandomAccessSeq[Die], var name: String) extends Die {
+class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable {
 
-    val count = dice.size
-	val spec = DiceSetHelper.specForDice(dice)
+    var value = sumDice
+    var customName: String = _
+    
+    def count = dice.size
+	def spec = DiceSetHelper.specForDice(dice)
 	
-	def this(dice: RandomAccessSeq[Die]) = { this(dice, DiceSetHelper.specForDice(dice)) }
+	def this(dice: RandomAccessSeq[Die]) = this(dice, null)
+    def this(s: String) = this(DiceSetHelper.diceStringToArray(s))
+    def this(s: String, newName: String) = { 
+        this(s)
+        this.name = newName 
+    }
 
 	def sumDice:Int = if (dice.isEmpty) 0 else values.reduceLeft(_ + _)
 
-    var value = sumDice
-    override def display = if (dice.isEmpty) "" else sumDice.toString
-    
-    def this(s: String) = { this(DiceSetHelper.diceStringToArray(s)) }
-    def this(s: String, name: String) = { this(s); this.name = name }
+    def display = if (dice.isEmpty) "" else sumDice.toString
 
+    def name = if (customName != null) customName else spec
+    
+    def isCustomName(newName: String) = {
+        (newName != null) && (newName.length != 0) && !spec.equals(newName)
+    }
+    
+    def name_=(newName: String) { 
+    	customName = if (isCustomName(newName)) newName else null 
+    }
+	
 	def roll = { 
 	    dice.foreach(die => die.roll)
 	    value = sumDice
@@ -53,12 +67,15 @@ class DiceSet(val dice: RandomAccessSeq[Die], var name: String) extends Die {
 	    } else {
 	        dice ++ List(newDie)
 	    }
-	    new DiceSet(newDice, name)
+	    dice = newDice
+	    this
 	}
 	
 	def remove(index: Int): DiceSet = {
-	    new DiceSet(dice.take(index) ++ dice.drop(index+1), name)
+	    dice = dice.take(index) ++ dice.drop(index+1)
+	    this
 	}
+	
 }
 
 class DiceSetHelper {}

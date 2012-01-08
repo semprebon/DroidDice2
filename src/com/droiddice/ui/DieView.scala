@@ -109,8 +109,10 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 		val size = findBestSize(width, height)
 		if (die.imageId != null) {
 			val imageId = DieView.TYPE_TO_IMAGE_ID.get(die.imageId)
+			Log.d(TAG, "got image " + dieImage + " for " + die.imageId)
 			dieImage = BitmapFactory.decodeResource(getResources(), imageId.getOrElse(R.drawable.d6));
 		} else {
+			Log.d(TAG, "no image for " + die.spec)
 			dieImage = null;
 		}
 	}
@@ -149,5 +151,13 @@ object DieView {
 		"d8" -> R.drawable.d8_60,
 		"d10" -> R.drawable.d10_60,
 		"d12" -> R.drawable.d12_60,
-		"d20" -> R.drawable.d20_60)
+		"d20" -> R.drawable.d20_60,
+		"s4" -> R.drawable.s4,
+		"s6" -> R.drawable.s6,
+		"s8" -> R.drawable.s8,
+		"s10" -> R.drawable.s10,
+		"s12" -> R.drawable.s12,
+		"s20" -> R.drawable.s20,
+		"adjustment" -> R.drawable.adjustment
+		)
 }

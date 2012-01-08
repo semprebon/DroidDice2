@@ -2,11 +2,12 @@
 <resources>
     <string name="app_name">DroidDice 2</string>
     <string name="roll">Roll</string>
-    <string name="change">Change</string>
+    <string name="change">Edit</string>
     <string name="edit_button_description">edit</string>
     <string name="dummy_text">dummy</string>
     <string name="dummy_result">12</string>
     <string name="dummy_name">Than: Telekinesis Activate</string>
     <dimen name="bottom_button_height">100dp</dimen>
+    <string name="create">New</string>
     
 </resources>

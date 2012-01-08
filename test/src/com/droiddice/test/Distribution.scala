@@ -3,7 +3,7 @@ package com.droiddice.test
 import com.droiddice.model._
 import scala.collection.mutable._
 
-class Distribution(val die: Die) {
+class Distribution(val die: Rollable) {
 
   val times = new Range(1, 1000, 1)
   val rolls: HashMap[Int, Int] = {

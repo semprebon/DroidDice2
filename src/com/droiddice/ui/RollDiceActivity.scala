@@ -36,6 +36,7 @@ class RollDiceActivity extends Activity with ViewFinder with TitleBarHandler {
 		setContentView(R.layout.roll_dice_activity)
 		installRollButtonHandler()
 		installChangeButtonHandler()
+		installNewButtonHandler()
 		installPickDicesetButtonHandler()
 		bind(currentDiceSet)
 		updateResult()
@@ -58,6 +59,15 @@ class RollDiceActivity extends Activity with ViewFinder with TitleBarHandler {
 				changeDiceIntent.putExtra("Dice", currentDiceSet.spec)
 				changeDiceIntent.putExtra("Name", currentDiceSet.name)
 				startActivityForResult(changeDiceIntent, NEW_DICE_RESULT)
+			}
+		})
+	}
+  
+	def installNewButtonHandler() {
+		findById[Button](R.id.roll_activity_new_button).setOnClickListener(new View.OnClickListener() {
+			override def onClick(view: View)  {
+				val intent = new Intent(view.getContext(), classOf[ChangeDiceActivity])
+				startActivityForResult(intent, NEW_DICE_RESULT)
 			}
 		})
 	}
@@ -126,9 +136,7 @@ class RollDiceActivity extends Activity with ViewFinder with TitleBarHandler {
 		if (requestCode == NEW_DICE_RESULT && resultCode == Activity.RESULT_OK) {
 			val spec = intent.getExtras().getString("Dice").asInstanceOf[String]
 			val name = intent.getExtras().getString("Name").asInstanceOf[String]
-			if (!spec.equals(currentDiceSet.spec)) {
-			    changeDiceSet(spec, name)
-			}
+			changeDiceSet(spec, name)
 		}
 	}
   

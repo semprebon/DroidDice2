@@ -4,35 +4,50 @@ import android.app.Activity
 import android.widget._
 import android.view.animation.AnimationUtils
 import android.view._
-
 import com.droiddice.R
-import com.droiddice.model.DiceSet
+import com.droiddice.model._
+import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
 
 /**
  * Handles interactions on the title bar; updating as the underlying DiceSet is changed, and
  * allowing the user to update the name of the dice set.
  */
-trait TitleBarHandler extends Activity {
-
-	var diceSet: DiceSet = _
+trait TitleBarHandler extends Activity with Observer[DiceSet] {
 
 	lazy val titleDisplay = findViewById(R.id.dice_set_name).asInstanceOf[TextView]
 	lazy val titleEdit = findViewById(R.id.dice_set_name_edit).asInstanceOf[EditText]
 	lazy val editButton = findViewById(R.id.dice_set_name_edit_button).asInstanceOf[ImageButton]
 	lazy val titleView = titleDisplay.getParent().getParent().asInstanceOf[ViewAnimator]
-  
+
+	var diceSet: DiceSet = _
+	
+	private val TAG = "TitleBarHandler"
+	    
+	override def update(diceSet: DiceSet) = {
+	    Log.d(TAG, "updated in titlebar: " + diceSet.spec)
+		updateTitleBar(diceSet)
+	}
+	
 	/**
 	 * Associate a dice set with the title bar
 	 */
 	def bind(newDiceSet: DiceSet) {
+	    Log.d(TAG, "binding " + newDiceSet)
     	diceSet = newDiceSet
-    	updateTitleBar()
+    	diceSet match  {
+    	    case observable: ObservableDiceSet => observable.addObserver(this)
+    	    case _ => Log.d(TAG, "non-observable dice set: " + diceSet.spec)
+    	}
+    	updateTitleBar(diceSet)
   	}
   
   	/**
   	 * Update the display with the current dice set name
   	 */
-  	def updateTitleBar() {
+  	def updateTitleBar(diceSet: DiceSet) {
+  	    Log.d(TAG, "updateTitleBar with " + diceSet.spec + "/" + diceSet.name)
   	    if (diceSet != null) {
   	    	titleDisplay.setText(diceSet.name)
   	    } else {
@@ -54,19 +69,22 @@ trait TitleBarHandler extends Activity {
   	    editButton.setVisibility(View.VISIBLE)
   		titleView.setInAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.grow_from_center))
   		titleView.setOutAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.shrink_to_center))
-    
+  		titleView.setDisplayedChild(0)
+  		
+  		// only will trigger it if no physical keyboard is open
   		editButton.setOnClickListener(new View.OnClickListener() {
   			override def onClick(view: View) {
-  				titleView.showNext()
-  				titleEdit.requestFocus()
+  			    titleEdit.setText(diceSet.name)
+  				titleView.setDisplayedChild(1)
+  				titleView.post(new Runnable { def run { titleEdit.requestFocusFromTouch } })
   			}
   		})
     
   		titleEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
   			override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
   				diceSet.name = titleEdit.getText().toString()
-  				updateTitleBar()
-  				titleView.showNext()
+  				updateTitleBar(diceSet)
+  				titleView.setDisplayedChild(0)
   				return false
   			}
   		})

@@ -5,6 +5,7 @@ import scala.util.Random
 class SimpleDie(val size: Int) extends Die {
 
  	val spec = "d" + size
+  	override val imageId = spec
 
 	val min: Int = 1
 	val max: Int = size
