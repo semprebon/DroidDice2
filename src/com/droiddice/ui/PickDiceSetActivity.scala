@@ -22,6 +22,8 @@ import com.droiddice.datastore.DiceSetProvider
 import android.widget.AdapterView
 import com.droiddice.datastore.DiceSetMapper
 import android.widget.TextView
+import android.widget.LinearLayout
+import android.widget.ImageView
 
 class PickDiceSetActivity extends FragmentActivity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
 //class PickDiceSetActivity extends Activity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
@@ -56,18 +58,6 @@ class PickDiceSetActivity extends FragmentActivity with ViewFinder with LoaderMa
 
 	}
     
-    class DiceSetCursorAdapter(context: Context) extends SimpleCursorAdapter(
-            context, R.layout.list_dice_set_item, null, DiceSetProvider.PUBLIC_COLUMNS, 
-            Array(R.id.dice_set_item_text), 0) {
-        
-        override def bindView(view: View, context: Context, cursor: Cursor) {
-            val nameView = view.asInstanceOf[TextView]
-            val diceSet = DiceSetMapper.cursorToDiceSet(cursor)
-            nameView.setText(diceSet.name)
-            nameView.setTag(diceSet)
-        }
-    }
-
     /**
      * Called when new loader needs to be created
      */

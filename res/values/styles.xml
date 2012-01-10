@@ -23,4 +23,5 @@
 <dimen name="gallery_margin">36dp</dimen>
 <dimen name="gallery_spacing">3dp</dimen>
 <dimen name="gallery_width">260dp</dimen>
+<dimen name="list_view_die_size">30dp</dimen>
 </resources>

@@ -21,7 +21,7 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 
 	var die: Die = new SimpleDie(6)
 	
-	var dieImage : Bitmap = _
+	var dieImager: DieImager = _
 	var display: Int = DieView.DISPLAY_VALUE
 	var textPaint: TextPaint = _
 	var preferredSize = DieView.SIZE_LARGE
@@ -42,7 +42,6 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 		textPaint.setFakeBoldText(true);
 		var padding = getContext().getResources().getDimensionPixelSize(R.dimen.die_padding);
 		setPadding(padding, padding, padding, padding);
-		dieImage = BitmapFactory.decodeResource(getResources(), R.drawable.d6_60);
 	}
 
 	override def onDraw(canvas: Canvas) {
@@ -51,13 +50,8 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 		val xOffset = (width - size) / 2 + getPaddingTop()
 		val yOffset = (height - size) / 2 + getPaddingLeft()
 		val shadowHeight = 14
-		
-		val paint = new Paint();
-		paint.setColorFilter(new LightingColorFilter(0xffffd9, 0));
-		if (dieImage != null) {
-			canvas.drawBitmap(dieImage, null, 
-					new Rect(xOffset, yOffset, xOffset + size, yOffset + size), paint);
-		}
+
+		dieImager.drawDie(canvas, die, xOffset, yOffset)
 
 		if (display == DieView.DISPLAY_VALUE) {
 			drawValue(canvas, size * 0.6F, die.display);
@@ -101,19 +95,7 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 	override def onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
 		super.onLayout(changed, left, top, right, bottom);
 		if (changed) {
-			loadImage(right - left, bottom - top);
-		}
-	}
-
-	private def loadImage(width: Int, height: Int) {
-		val size = findBestSize(width, height)
-		if (die.imageId != null) {
-			val imageId = DieView.TYPE_TO_IMAGE_ID.get(die.imageId)
-			Log.d(TAG, "got image " + dieImage + " for " + die.imageId)
-			dieImage = BitmapFactory.decodeResource(getResources(), imageId.getOrElse(R.drawable.d6));
-		} else {
-			Log.d(TAG, "no image for " + die.spec)
-			dieImage = null;
+		    dieImager = new DieImager(context, findBestSize(right - left, bottom - top))
 		}
 	}
 
