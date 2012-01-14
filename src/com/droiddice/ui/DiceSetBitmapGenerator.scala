@@ -14,18 +14,20 @@ import com.droiddice.model.Die
 class DiceSetBitmapGenerator(context: Context, size: Int) {
     
     val dieImager = new DieImager(context, size)
+    val diePadding = context.getResources.getDimension(R.dimen.die_padding).toInt
+    val paddedDieSize = size + 2*diePadding
+    val height = paddedDieSize
     
     def generate(diceSet: DiceSet): Bitmap = {
-        val width = size * diceSet.count
-        val height = size
+        val width = (size + diePadding) * diceSet.count + diePadding
        	val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
 		val canvas = new Canvas(bitmap)
        	
-       	var xOffset = 0
-       	val yOffset = 0
+       	var xOffset = diePadding
+       	val yOffset = diePadding
        	diceSet.dice.foreach(die => {
        	    dieImager.drawDie(canvas, die, xOffset, yOffset)
-       		xOffset += size
+       		xOffset += size + diePadding
        	})
 		bitmap
     }

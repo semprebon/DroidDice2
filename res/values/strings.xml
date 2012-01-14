@@ -11,5 +11,7 @@
     <string name="create">New</string>
     <string name="move_left">&lt;</string>
     <string name="move_right">></string>
+    <string name="pick_button_text">&#8230;</string>
+    <string name="delete">Delete</string>
     
 </resources>

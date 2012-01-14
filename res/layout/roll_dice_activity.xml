@@ -56,7 +56,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="@string/dummy_name"/>
 
         <Button
             android:id="@+id/dice_set_item_2"
@@ -64,7 +64,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button" />
+            android:text="@string/dummy_name" />
 
         <Button
             android:id="@+id/dice_sets_selection_button"
@@ -72,7 +72,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="..." />
+            android:text="@string/pick_button_text" />
     </LinearLayout>
 
     <LinearLayout

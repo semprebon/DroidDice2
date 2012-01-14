@@ -17,6 +17,7 @@ import android.content.UriMatcher
 
 object DiceSetProvider {
     val CONTENT_URI = Uri.parse("content://com.droiddice.dicesetprovider");
+    val AUTHORITY = "com.droiddice.dicesetprovider"
     
     val _ID = "_id"
     val NAME = "name"
@@ -30,8 +31,8 @@ object DiceSetProvider {
 	val DICE_SETS = 1
 	val DICE_SET_ID = 2
 	
-	URI_MATCHER.addURI("droiddice", "diceset", DICE_SETS)
-	URI_MATCHER.addURI("droiddice", "diceset/#", DICE_SET_ID)
+	URI_MATCHER.addURI(AUTHORITY, "diceset/*", DICE_SET_ID)
+	URI_MATCHER.addURI(AUTHORITY, "diceset", DICE_SETS)
 
 }
 
@@ -55,7 +56,8 @@ class DiceSetProvider extends ContentProvider {
         db = new DatabaseBuilder(getContext()).open()
         return true
     }
-     
+
+    
     /**
      * Run query
      */
@@ -83,20 +85,43 @@ class DiceSetProvider extends ContentProvider {
     def insert(uri: Uri, values: ContentValues): Uri = {
 	    Log.d(TAG, "inserting DiceSet " + values.getAsString(DiceSetProvider.NAME))
         val id = db.insertOrThrow(DICE_SET_TABLE, null, values)
+        getContext().getContentResolver().notifyChange(uri, null)
         return Uri.withAppendedPath(DiceSetProvider.CONTENT_URI, id.toString())
     }
 
+    def addIdToSelection(selection: String, args: Array[String], uri: Uri): 
+    		(String, Array[String]) = {
+        Log.d(TAG, "Uri=" + uri)
+        if (DiceSetProvider.URI_MATCHER.`match`(uri) == DiceSetProvider.DICE_SET_ID) {
+            Log.d(TAG, "Using selction with id " + uri.getLastPathSegment())
+            return (_ID + "=?", Array(uri.getLastPathSegment()))
+        } else {
+            Log.d(TAG, "Using selction unchanged")
+            return (selection, args)
+    	}
+    }
+    
     /**
      * Update the dice set
      */
-    def update(uri: Uri, values: ContentValues, selection: String, selectionArgs: Array[String]): Int = {
-    	val id = uri.getLastPathSegment()
-	    Log.d(TAG, "updatting DiceSet " + id)
-        db.update(DICE_SET_TABLE, values, selection, selectionArgs)
+    def update(uri: Uri, values: ContentValues, 
+            originalSelection: String, originalArgs: Array[String]): Int = {
+        val (selection, args) = addIdToSelection(originalSelection, originalArgs, uri)
+        val count = db.update(DICE_SET_TABLE, values, selection, args)
+        getContext().getContentResolver().notifyChange(uri, null)
+        return count
     }
     
-    def delete(uri: Uri, selection: String, selectionArgs: Array[String]): Int = {
-        db.delete(DICE_SET_TABLE, selection, selectionArgs)
+    /**
+     * Delete a dice set
+     */
+    def delete(uri: Uri, originalSelection: String, originalArgs: Array[String]): Int = {
+        val (selection, args) = addIdToSelection(originalSelection, originalArgs, uri)
+        Log.d(TAG, "deleting " + selection + " " + args)
+        args.foreach(arg => Log.d(TAG, "arg=" + arg))
+        val count = db.delete(DICE_SET_TABLE, selection, args)
+        getContext().getContentResolver().notifyChange(uri, null)
+        return count
     }
 
     def getType(uri: Uri): String = {

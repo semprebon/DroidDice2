@@ -14,7 +14,7 @@ import com.droiddice._
 import com.droiddice.model._
 import android.view.View.OnClickListener
 
-class RollDiceActivity extends Activity with ViewFinder with TitleBarHandler {
+class RollActivity extends Activity with ViewFinder with TitleBarHandler {
 
 	val TAG = "RollDiceActivity"
  
@@ -54,20 +54,18 @@ class RollDiceActivity extends Activity with ViewFinder with TitleBarHandler {
   
 	def installChangeButtonHandler() {
 		findById[Button](R.id.roll_activity_change_button).setOnClickListener(new View.OnClickListener() {
-			override def onClick(view: View)  {
-				val changeDiceIntent = new Intent(view.getContext(), classOf[ChangeDiceActivity])
-				changeDiceIntent.putExtra("Dice", currentDiceSet.spec)
-				changeDiceIntent.putExtra("Name", currentDiceSet.name)
-				startActivityForResult(changeDiceIntent, NEW_DICE_RESULT)
-			}
+			override def onClick(view: View) {
+			    startActivityForResult(
+			            EditActivity.intent(RollActivity.this, currentDiceSet), NEW_DICE_RESULT)
+			} 
 		})
 	}
   
 	def installNewButtonHandler() {
 		findById[Button](R.id.roll_activity_new_button).setOnClickListener(new View.OnClickListener() {
 			override def onClick(view: View)  {
-				val intent = new Intent(view.getContext(), classOf[ChangeDiceActivity])
-				startActivityForResult(intent, NEW_DICE_RESULT)
+			    val intent = EditActivity.intent(RollActivity.this, null)
+				startActivityForResult(intent,  NEW_DICE_RESULT)
 			}
 		})
 	}
@@ -75,7 +73,7 @@ class RollDiceActivity extends Activity with ViewFinder with TitleBarHandler {
 	def installPickDicesetButtonHandler() {
 		findById[Button](R.id.dice_sets_selection_button).setOnClickListener(new View.OnClickListener() {
 			override def onClick(view: View)  {
-				val intent = new Intent(view.getContext(), classOf[PickDiceSetActivity])
+				val intent = new Intent(view.getContext(), classOf[PickActivity])
 				startActivityForResult(intent, NEW_DICE_RESULT)
 			}
 		})

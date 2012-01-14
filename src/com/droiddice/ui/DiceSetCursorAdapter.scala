@@ -6,10 +6,10 @@ import android.widget._
 import android.database.Cursor
 import android.support.v4.widget.SimpleCursorAdapter
 import android.util.Log
-
 import com.droiddice.datastore._
 import com.droiddice.model._
 import com.droiddice._
+import android.graphics.drawable._
 
 class DiceSetCursorAdapter(context: Context) extends SimpleCursorAdapter(
             context, R.layout.list_dice_set_item, null, DiceSetProvider.PUBLIC_COLUMNS, 
@@ -28,8 +28,7 @@ class DiceSetCursorAdapter(context: Context) extends SimpleCursorAdapter(
 		nameView.setText(diceSet.name)
             
 		val imageView = layoutView.getChildAt(1).asInstanceOf[ImageView]
-		imageView.setImageBitmap(generator.generate(diceSet
-		        ))
+		imageView.setImageBitmap(generator.generate(diceSet))
     }
     
 	override def newView(context: Context, cursor: Cursor, parent: ViewGroup): View = {

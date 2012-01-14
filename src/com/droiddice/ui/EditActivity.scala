@@ -19,9 +19,28 @@ import android.view.GestureDetector.SimpleOnGestureListener
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.content.Intent
+import com.droiddice.datastore.DiceSetDataStore
 
-class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
+object EditActivity {
+    
+    /**
+     * Create an intent to edit a dice set with this activity
+     */
+    def intent(activity: Activity, diceSet: DiceSet): Intent = {
+    	val intent = new Intent(activity, classOf[EditActivity])
+    	if (diceSet != null) {
+    		intent.putExtra("Dice", diceSet.spec)
+    		intent.putExtra("Name", diceSet.name)
+    	}
+		return intent
+    }
+}
 
+class EditActivity extends Activity with TitleBarHandler with ViewFinder {
+
+    lazy val dataStore = new DiceSetDataStore(this)
+    
 	val TAG = "EditDiceActivity"
  
 	val GALLERY_PAGES = Array[GalleryPage](
@@ -62,9 +81,7 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		setResult(Activity.RESULT_OK, intent)
 		
 		Log.d(TAG, "Executig async task")
-		new createOrUpdateDataStore().execute(currentDiceSet)
-		
-		//finish()
+		dataStore.create(currentDiceSet, () => { finish() })
 	}
   
 	def createBitmapOfView(view: View) : Bitmap = {
@@ -75,46 +92,6 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		bitmap
 	}
 	
-    /* This should really by DiceSet, not Object; but due to bug, scala sometimes has problems 
-     * passing varargs; but works with Object... 
-     */ 
-	class createOrUpdateDataStore extends AsyncTask[Object, Void, Int] {
-	    var dialog: ProgressDialog = _
-	    
-		override protected def doInBackground(diceSets: Object*): Int = {
-			val diceSet = diceSets(0).asInstanceOf[DiceSet]
-			val values = DiceSetMapper.diceSetToValues(diceSet)
-			
-			val contentResolver = getContentResolver()
-			val uri = DiceSetProvider.CONTENT_URI
-		    Log.d(TAG, "Quering DiceSetProvider for " + currentDiceSet.name)
-			val cursor = managedQuery(uri, Array(DiceSetProvider._ID), DiceSetProvider.NAME + "=?", Array(currentDiceSet.name), null)
-			val id = if (cursor.moveToFirst()) {
-					val id = cursor.getInt(0)
-					Log.d(TAG, "Updating DiceSet " + id)
-					val itemUri = Uri.withAppendedPath(uri, id.toString())
-					getContentResolver().update(itemUri, values, null, null)
-					id
-				} else {
-					Log.d(TAG, "Adding new DiceSet " + currentDiceSet.name)
-					val itemUri = getContentResolver().insert(DiceSetProvider.CONTENT_URI, values)
-					Log.d(TAG, "Added " + itemUri)
-					itemUri.getLastPathSegment().toInt
-				}
-			return id
-		}
-		
-		override protected def onPreExecute() {
-		    dialog = ProgressDialog.show(ChangeDiceActivity.this, "Dice", "Updating...", true)
-		}
-
-		override protected def onPostExecute(result: Int) {
-			dialog.dismiss()
-		    Log.d(TAG, "Returning dice:" + diceSet.spec)
-		    finish()
-		}
-	}
-
 	/**
 	 * Create view for displaying the current dice set
 	 */
@@ -137,7 +114,7 @@ class ChangeDiceActivity extends Activity with TitleBarHandler with ViewFinder {
 		Log.d(TAG, "Setting up galallery")
 		val galleryView = findById[Gallery](R.id.dice_gallery)
 		val adapter = new GalleryPageViewAdapter(this, GALLERY_PAGES, galleryView)
-		galleryView.setSpacing(getResources().getDimension(R.dimen.gallery_spacing).toInt)
+		//galleryView.setSpacing(getResources().getDimension(R.dimen.gallery_spacing).toInt)
 		galleryView.setAdapter(adapter)
 		galleryView.setSelection(1)
 	}

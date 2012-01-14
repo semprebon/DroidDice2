@@ -7,7 +7,7 @@
 <dimen name="die_value_text_size">32sp</dimen>
 <dimen name="result_text_size">48sp</dimen>
 <dimen name="focus_border_thickness">4sp</dimen>
-<dimen name="die_padding">2sp</dimen>
+<dimen name="die_padding">2dp</dimen>
 <style name="action_button">
     <item name="android:layout_height">70dp</item>
 </style>
@@ -23,5 +23,11 @@
 <dimen name="gallery_margin">36dp</dimen>
 <dimen name="gallery_spacing">3dp</dimen>
 <dimen name="gallery_width">260dp</dimen>
-<dimen name="list_view_die_size">30dp</dimen>
+<dimen name="list_view_die_size">40dp</dimen>
+<style name="dice_set_list_item" parent="dice_set_item">
+    <item name="android:layout_height">50dp</item>
+    <item name="android:padding">2dp</item>
+    <item name="android:textSize">24sp</item>
+    <item name="android:textColor">#FFFF</item>
+</style>
 </resources>

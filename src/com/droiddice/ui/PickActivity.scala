@@ -24,10 +24,16 @@ import com.droiddice.datastore.DiceSetMapper
 import android.widget.TextView
 import android.widget.LinearLayout
 import android.widget.ImageView
+import android.view.ContextMenu.ContextMenuInfo
+import android.widget.AdapterView.AdapterContextMenuInfo
+import com.droiddice.R
+import com.droiddice.datastore.DiceSetDataStore
 
-class PickDiceSetActivity extends FragmentActivity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
+class PickActivity extends FragmentActivity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
 //class PickDiceSetActivity extends Activity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
 
+    lazy val dataStore = new DiceSetDataStore(this)
+    
     var adapter: SimpleCursorAdapter = _
     lazy val diceSetListView = findById[ListView](R.id.dice_set_selection_list)
     
@@ -55,9 +61,42 @@ class PickDiceSetActivity extends FragmentActivity with ViewFinder with LoaderMa
 	    		finish()
 	    	}
 		})
+		registerForContextMenu(diceSetListView)
 
 	}
     
+    def updateDisplay() {
+    	Log.d(TAG, "notifying list view")
+    	adapter.notifyDataSetChanged() 
+    }
+
+	override def onCreateContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenuInfo) {
+		super.onCreateContextMenu(menu, view, menuInfo)
+		getMenuInflater().inflate(R.menu.dice_set_context, menu)
+	}
+	
+	override def onContextItemSelected(item: MenuItem): Boolean = {
+		val info = item.getMenuInfo().asInstanceOf[AdapterContextMenuInfo]
+		val diceSet = info.targetView.getTag().asInstanceOf[DiceSet]
+		item.getItemId() match {
+			case R.id.edit_dice_set => { 
+			    	startActivity(
+			            EditActivity.intent(PickActivity.this, null))
+			        true 
+			    }
+			case R.id.delete_dice_set => { deleteDiceSet(diceSet); true }
+			case _ => super.onContextItemSelected(item)
+		}
+	}
+
+	def deleteDiceSet(diceSet: DiceSet) {
+	    dataStore.delete(diceSet, () => {
+	        val run = new Runnable() { override def run { updateDisplay() } }
+	        Log.d(TAG, "running runable")
+	        PickActivity.this.runOnUiThread(run) 
+	    })
+	}
+	
     /**
      * Called when new loader needs to be created
      */

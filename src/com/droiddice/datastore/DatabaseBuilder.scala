@@ -7,7 +7,7 @@ import android.util.Log
 
 object DatabaseBuilder {
 	val DATABASE_NAME = "dice"
-    val VERSION = 1
+    val VERSION = 2
 }
 
 class DatabaseBuilder(context: Context)
@@ -16,7 +16,8 @@ class DatabaseBuilder(context: Context)
     val TAG = "DatabaseBuilder"
     
     val MIGRATIONS = Map[Int, Migration](
-            1 -> new CreateDiceSetTable
+            1 -> new CreateDiceSetTable,
+            2 -> new CreateNameIndex
     	)
     	
     def open(): SQLiteDatabase = getWritableDatabase()
@@ -68,6 +69,19 @@ class DatabaseBuilder(context: Context)
 	
 		override def down(db: SQLiteDatabase) {
 		    db.execSQL("drop table dice_sets;")
+		}
+	}
+
+	/* Migration 2 */
+	class CreateNameIndex extends Migration {
+	
+		override def up(db: SQLiteDatabase) {
+		    db.execSQL("delete from dice_sets;")
+		    db.execSQL("create unique index name_index on dice_sets (name)")
+		}
+	
+		override def down(db: SQLiteDatabase) {
+		    db.execSQL("drop index name_index")
 		}
 	}
 }
