@@ -7,7 +7,9 @@ object DiceSetMapper {
 
    	def diceSetToValues(diceSet: DiceSet): ContentValues = {
 	    val values = new ContentValues()
-	    values.put(DiceSetProvider.NAME, diceSet.name)
+	    if (diceSet.isNamed) {
+	        values.put(DiceSetProvider.NAME, diceSet.name)
+	    }
 	    values.put(DiceSetProvider.SPEC, diceSet.spec)
 	    values.put(DiceSetProvider.VALUES, diceSet.valuesString)
 	    return values
@@ -23,9 +25,13 @@ object DiceSetMapper {
    	val COLUMN_TO_INDEX = DiceSetProvider.PUBLIC_COLUMNS.zipWithIndex.toMap
    	
    	def cursorToDiceSet(cursor: Cursor): DiceSet = {
-   	    val diceSet = new DiceSet(cursor.getString(COLUMN_TO_INDEX(DiceSetProvider.SPEC)))
+   	    val spec = cursor.getString(COLUMN_TO_INDEX(DiceSetProvider.SPEC))
+   	    val id = cursor.getInt(COLUMN_TO_INDEX(DiceSetProvider._ID))
+   	    val diceSet = new SavedDiceSet(spec, id)
    	    diceSet.name = cursor.getString(COLUMN_TO_INDEX(DiceSetProvider.NAME))
    	    diceSet.valuesString = cursor.getString(COLUMN_TO_INDEX(DiceSetProvider.VALUES))
    	    return diceSet
    	}
 }
+
+class SavedDiceSet(spec: String, val id: Int) extends DiceSet(spec) {}

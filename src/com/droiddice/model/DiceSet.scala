@@ -31,7 +31,7 @@ class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable 
     	customName = if (isCustomName(newName)) newName else null 
     }
 	
-    def isNamed = name != null
+    def isNamed = customName != null
     
 	def roll = { 
 	    dice.foreach(die => die.roll)
@@ -77,6 +77,8 @@ class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable 
 	    dice = dice.take(index) ++ dice.drop(index+1)
 	    this
 	}
+	
+	override def toString = customName + "(" + spec + ")=(" + valuesString + ")" 
 	
 }
 

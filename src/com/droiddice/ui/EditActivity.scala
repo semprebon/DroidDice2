@@ -59,7 +59,7 @@ class EditActivity extends Activity with TitleBarHandler with ViewFinder {
 		currentDiceSet = if (extras != null) 
 				new ObservableDiceSet(extras.get("Dice").asInstanceOf[String], extras.get("Name").asInstanceOf[String])
 			else
-				new ObservableDiceSet("d6", "")
+				new ObservableDiceSet("d6", null)
 		
 		setContentView(R.layout.change_dice_activity)
 
@@ -143,8 +143,9 @@ class EditActivity extends Activity with TitleBarHandler with ViewFinder {
 	    	gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 	    		override def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
 	    			val die = view.asInstanceOf[DieView].die
-	    			Log.d(TAG, "adding " + die.spec)
+	    			Log.d(TAG, "adding " + die.spec + " to " + currentDiceSet)
 	    			currentDiceSet.add(die.spec)
+	    			Log.d(TAG, "now have" + currentDiceSet)
 	    			createCurrentSelection()
 	    		}
 	    	})

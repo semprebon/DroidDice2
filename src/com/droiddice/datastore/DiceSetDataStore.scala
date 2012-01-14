@@ -20,7 +20,7 @@ import android.content.ContentValues
 class DiceSetDataStore(activity: Activity) {
 
 	val contentResolver = activity.getContentResolver()
-	val uri = Uri.withAppendedPath(DiceSetProvider.CONTENT_URI, "diceset")
+	val uri = Uri.withAppendedPath(DiceSetProvider.CONTENT_URI, "dicesets")
 		
     private val TAG = "DiceSetDataStore"
         
@@ -32,7 +32,7 @@ class DiceSetDataStore(activity: Activity) {
 	        override def process(diceSet: DiceSet): Int = {
 	        	val values = DiceSetMapper.diceSetToValues(diceSet)
 
-	        	Log.d(TAG, "Adding new DiceSet " + diceSet.name)
+	        	Log.d(TAG, "Adding new DiceSet " + diceSet)
 	        	val itemUri = contentResolver.insert(DiceSetProvider.CONTENT_URI, values)
 	        	Log.d(TAG, "Added " + itemUri)
 	        	itemUri.getLastPathSegment().toInt
@@ -49,11 +49,11 @@ class DiceSetDataStore(activity: Activity) {
 		        	case Some(id) => {
 		        		val values = DiceSetMapper.diceSetToValues(diceSet)
 		        		Log.d(TAG, "Updating DiceSet " + id)
-		        		val itemUri = Uri.withAppendedPath(uri, id.toString())
+		        		val itemUri = DiceSetProvider.uriFor(id)
 		        		contentResolver.update(itemUri, values, null, null)
 		        		return id
 		        	}
-		        	case None => throw new SQLException("Updating nonexistant record " + diceSet.name)
+		        	case None => throw new SQLException("Updating nonexistant record " + diceSet)
 		        }
 	        }
    	    }
@@ -69,7 +69,7 @@ class DiceSetDataStore(activity: Activity) {
 	    		id match {
 		    		case Some(id) => {
 		    			Log.d(TAG, "Renaming DiceSet " + id + " to " + newName)
-		    			val itemUri = Uri.withAppendedPath(uri, id.toString())
+		    			val itemUri = DiceSetProvider.uriFor(id)
 		    			val values = new ContentValues()
 		    			values.put(DiceSetProvider.NAME, newName)
 		    			contentResolver.update(itemUri, values, null, null)
@@ -90,7 +90,7 @@ class DiceSetDataStore(activity: Activity) {
 		        	case Some(id) => {
 		        		val values = DiceSetMapper.diceSetToValues(diceSet)
 		        		Log.d(TAG, "Deleting DiceSet " + id)
-		        		val itemUri = Uri.withAppendedPath(uri, id.toString())
+		        		val itemUri = DiceSetProvider.uriFor(id)
 		        		contentResolver.delete(itemUri, null, null)
 		        		return id
 		        	}

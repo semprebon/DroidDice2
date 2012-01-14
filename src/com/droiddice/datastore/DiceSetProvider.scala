@@ -32,8 +32,10 @@ object DiceSetProvider {
 	val DICE_SET_ID = 2
 	
 	URI_MATCHER.addURI(AUTHORITY, "diceset/*", DICE_SET_ID)
-	URI_MATCHER.addURI(AUTHORITY, "diceset", DICE_SETS)
+	URI_MATCHER.addURI(AUTHORITY, "dicesets", DICE_SETS)
 
+	def uriFor(id: Long) = Uri.withAppendedPath(DiceSetProvider.CONTENT_URI, "diceset/" + id.toString())
+    def uriFor(diceSet: SavedDiceSet): Uri = uriFor(diceSet.id)
 }
 
 class DiceSetProvider extends ContentProvider {
@@ -84,9 +86,17 @@ class DiceSetProvider extends ContentProvider {
      */
     def insert(uri: Uri, values: ContentValues): Uri = {
 	    Log.d(TAG, "inserting DiceSet " + values.getAsString(DiceSetProvider.NAME))
+	    if (values.getAsString(NAME) == null) {
+	        val diceSet = findAnonymous(values.getAsString(SPEC))
+	        if (diceSet != null) {
+	            val uri = DiceSetProvider.uriFor(diceSet)
+	            update(uri, values, null, null)
+	            return uri
+	        }
+	    }
         val id = db.insertOrThrow(DICE_SET_TABLE, null, values)
         getContext().getContentResolver().notifyChange(uri, null)
-        return Uri.withAppendedPath(DiceSetProvider.CONTENT_URI, id.toString())
+        return DiceSetProvider.uriFor(id)
     }
 
     def addIdToSelection(selection: String, args: Array[String], uri: Uri): 
@@ -140,25 +150,34 @@ class DiceSetProvider extends ContentProvider {
         db.delete(DICE_SET_TABLE, "name=?", Array(name))
     }
 
-    def findByName(name: String): DiceSet = {
+    def findByName(name: String): SavedDiceSet = {
         val cursor = db.query(true, DICE_SET_TABLE, 
                 ALL_COLUMNS,
                 "name=?", Array(name),
                 null, null, null, null)
-        if (cursor != null && cursor.moveToFirst()) {
-        	return diceSetAt(cursor)
-        } else {
-            return null
-        }
+        val diceSet = if (cursor != null && cursor.moveToFirst()) diceSetAt(cursor) else null
+        cursor.close()
+        return diceSet
+    }
+
+    def findAnonymous(spec: String): SavedDiceSet = {
+        val cursor = db.query(true, DICE_SET_TABLE, 
+                ALL_COLUMNS,
+                "spec=?", Array(spec),
+                null, null, null, null)
+        val diceSet = if (cursor != null && cursor.moveToFirst()) diceSetAt(cursor) else null
+        cursor.close()
+        return diceSet
     }
 
 	def stringValue(cursor: Cursor, column: String) = cursor.getString(cursor.getColumnIndexOrThrow(column))
+	def intValue(cursor: Cursor, column: String) = cursor.getInt(cursor.getColumnIndexOrThrow(column))
 	
 	/**
 	 * Create a diceSet object for the cursor's current row
 	 */
-	def diceSetAt(cursor: Cursor): DiceSet = {
-	    val diceSet = new DiceSet(stringValue(cursor, "spec"));
+	def diceSetAt(cursor: Cursor): SavedDiceSet = {
+	    val diceSet = new SavedDiceSet(stringValue(cursor, "spec"), intValue(cursor, "_id"));
     	diceSet.name = stringValue(cursor, "name")
 		return diceSet
 	}
