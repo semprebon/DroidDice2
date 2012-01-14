@@ -13,5 +13,6 @@
     <string name="move_right">></string>
     <string name="pick_button_text">&#8230;</string>
     <string name="delete">Delete</string>
+    <string name="empty_pick_list">"No dice  sets saved. "</string>
     
 </resources>

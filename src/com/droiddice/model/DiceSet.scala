@@ -31,6 +31,8 @@ class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable 
     	customName = if (isCustomName(newName)) newName else null 
     }
 	
+    def isNamed = name != null
+    
 	def roll = { 
 	    dice.foreach(die => die.roll)
 	    value = sumDice

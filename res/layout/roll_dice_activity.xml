@@ -81,25 +81,25 @@
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/roll_activity_roll_button"
-            style="@style/action_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:text="@string/roll" />
-
-        <Button
             android:id="@+id/roll_activity_change_button"
             style="@style/action_button"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/change" />
-
+
         <Button
             android:id="@+id/roll_activity_new_button"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:text="@string/create" />
+
+        <Button
+            android:id="@+id/roll_activity_roll_button"
+            style="@style/action_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/roll" />
 
     </LinearLayout>
 

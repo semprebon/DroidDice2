@@ -17,18 +17,19 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android1:ellipsize="end"
-            android1:gravity="center"
-            android1:singleLine="true"
-            android1:text="@string/dummy_name"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/dummy_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android1:textSize="30sp" />
 
         <ImageButton
             android:id="@+id/dice_set_name_edit_button"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android1:layout_gravity="center_vertical"
+            android:layout_gravity="center_vertical"
             android:contentDescription="@string/edit_button_description"
             android:src="@drawable/ic_edit"/>
 

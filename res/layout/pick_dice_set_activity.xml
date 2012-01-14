@@ -4,13 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
-    <ListView
-        android:id="@+id/dice_set_selection_list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-        <!-- Preview: listitem=@layout/list_dice_set_item -->
-
-    </ListView>
+	<fragment class="com.droiddice.ui.PickFragment"
+            android:id="@+id/pick_fragment"
+            android:layout_width="fill_parent" android:layout_height="fill_parent" />
  </LinearLayout>
  

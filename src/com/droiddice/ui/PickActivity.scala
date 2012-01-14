@@ -28,42 +28,53 @@ import android.view.ContextMenu.ContextMenuInfo
 import android.widget.AdapterView.AdapterContextMenuInfo
 import com.droiddice.R
 import com.droiddice.datastore.DiceSetDataStore
+import android.support.v4.app.ListFragment
 
-class PickActivity extends FragmentActivity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
+class PickActivity extends FragmentActivity {
+    override protected def onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.pick_dice_set_activity)
+
+        // Create the list fragment and add it as our sole content.
+        if (getSupportFragmentManager().findFragmentById(R.id.pick_fragment) == null) {
+            val list = new PickFragment()
+            getSupportFragmentManager().beginTransaction().add(R.id.pick_fragment, list).commit()
+        }
+    }
+}
+    
+class PickFragment extends ListFragment with FragmentViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
 //class PickDiceSetActivity extends Activity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
 
-    lazy val dataStore = new DiceSetDataStore(this)
+    lazy val dataStore = new DiceSetDataStore(getActivity())
     
     var adapter: SimpleCursorAdapter = _
-    lazy val diceSetListView = findById[ListView](R.id.dice_set_selection_list)
     
     val TAG = "PickDiceSetActivity"
-        
-   	override def onCreate(savedInstanceState: Bundle) {
-		super.onCreate(savedInstanceState)
-		Log.d(TAG, "onCreate steting content view")
-		setContentView(R.layout.pick_dice_set_activity)
-		Log.d(TAG, "onCreate creating adapter")
-		adapter = new DiceSetCursorAdapter(this)
+       
+    override def onActivityCreated(savedInstanceState: Bundle) {
+    	super.onActivityCreated(savedInstanceState)
+    	setEmptyText("No dice sets created")
+    	Log.d(TAG, "onCreate creating adapter")
+		adapter = new DiceSetCursorAdapter(getActivity())
 		Log.d(TAG, "onCreate seting adapter")
-		diceSetListView.setAdapter(adapter)
+		setListAdapter(adapter)
 		Log.d(TAG, "onCreate initializing loader")
-		getSupportLoaderManager().initLoader(0, null, this)
+		getActivity().getSupportLoaderManager().initLoader(0, null, this)
 		Log.d(TAG, "onCreate setting click handler")
-		diceSetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			override def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
 	    		val diceSet = view.getTag().asInstanceOf[DiceSet]
 	    		Log.d(TAG, "clicked on " + diceSet.name + " (" + diceSet.spec + ")")
-	    		val intent = getIntent()
+	    		val intent = getActivity().getIntent()
 	    		intent.putExtra("Dice", diceSet.spec)
 	    		intent.putExtra("Name", diceSet.name)
-	    		setResult(Activity.RESULT_OK, intent)
-	    		finish()
+	    		getActivity().setResult(Activity.RESULT_OK, intent)
+	    		getActivity().finish()
 	    	}
 		})
-		registerForContextMenu(diceSetListView)
-
-	}
+		registerForContextMenu(getListView())
+    }
     
     def updateDisplay() {
     	Log.d(TAG, "notifying list view")
@@ -72,7 +83,7 @@ class PickActivity extends FragmentActivity with ViewFinder with LoaderManager.L
 
 	override def onCreateContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenuInfo) {
 		super.onCreateContextMenu(menu, view, menuInfo)
-		getMenuInflater().inflate(R.menu.dice_set_context, menu)
+		getActivity().getMenuInflater().inflate(R.menu.dice_set_context, menu)
 	}
 	
 	override def onContextItemSelected(item: MenuItem): Boolean = {
@@ -81,7 +92,7 @@ class PickActivity extends FragmentActivity with ViewFinder with LoaderManager.L
 		item.getItemId() match {
 			case R.id.edit_dice_set => { 
 			    	startActivity(
-			            EditActivity.intent(PickActivity.this, null))
+			            EditActivity.intent(getActivity(), null))
 			        true 
 			    }
 			case R.id.delete_dice_set => { deleteDiceSet(diceSet); true }
@@ -93,17 +104,17 @@ class PickActivity extends FragmentActivity with ViewFinder with LoaderManager.L
 	    dataStore.delete(diceSet, () => {
 	        val run = new Runnable() { override def run { updateDisplay() } }
 	        Log.d(TAG, "running runable")
-	        PickActivity.this.runOnUiThread(run) 
+	        getActivity().runOnUiThread(run) 
 	    })
 	}
 	
-    /**
+	/**
      * Called when new loader needs to be created
      */
     def onCreateLoader(id: Int, args: Bundle): Loader[Cursor] = {
         Log.d(TAG, "onCreateLoader")
         val baseUri = DiceSetProvider.CONTENT_URI
-        return new CursorLoader(this, baseUri,
+        return new CursorLoader(getActivity(), baseUri,
                 DiceSetProvider.PUBLIC_COLUMNS, null, null,
                 DiceSetProvider.NAME + " ASC")
     }
