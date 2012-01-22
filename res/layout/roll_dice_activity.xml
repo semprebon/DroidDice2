@@ -1,106 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/roll_activity_layout"
+    android:id="@+id/pick_dice_set_activity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/background"
     android:orientation="vertical" >
 
-    <include
-        android:id="@+id/title_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/window_title" />
-
-    <TextView
-        android:id="@+id/dice_result_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:shadowColor="#000"
-        android:shadowDx="4"
-        android:shadowDy="4"
-        android:shadowRadius="0.1"
-        android:text="@string/dummy_result"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="72sp"
-        android:textStyle="bold" />
-
-    <GridView
-        android:id="@+id/dice_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:layout_weight="0.10"
-        android:gravity="center"
-        android:numColumns="4" >
-    </GridView>
-
-    <LinearLayout
-        android:id="@+id/dice_set_history"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/dice_set_item_0"
-            style="@style/dice_set_item"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dummy_name" />
-
-        <Button
-            android:id="@+id/dice_set_item_1"
-            style="@style/dice_set_item"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dummy_name"/>
-
-        <Button
-            android:id="@+id/dice_set_item_2"
-            style="@style/dice_set_item"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dummy_name" />
-
-        <Button
-            android:id="@+id/dice_sets_selection_button"
-            style="@style/dice_set_item"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/pick_button_text" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/roll_activity_change_button"
-            style="@style/action_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:text="@string/change" />
-
-        <Button
-            android:id="@+id/roll_activity_new_button"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:text="@string/create" />
-
-        <Button
-            android:id="@+id/roll_activity_roll_button"
-            style="@style/action_button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:text="@string/roll" />
-
-    </LinearLayout>
-
-</LinearLayout>
+	<fragment class="com.droiddice.ui.RollFragment"
+            android:id="@+id/roll_fragment"
+            android:layout_width="fill_parent" android:layout_height="fill_parent" />
+ </LinearLayout>

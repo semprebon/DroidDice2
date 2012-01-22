@@ -18,6 +18,8 @@ class DiceSetCursorAdapter(context: Context) extends SimpleCursorAdapter(
     val TAG = "DiceSetCursorAdapter"
     val size = context.getResources.getDimension(R.dimen.list_view_die_size).toInt
 	val generator = new DiceSetBitmapGenerator(context, size)
+	lazy val textColor = context.getResources().getColor(R.color.text_color)
+	lazy val textColorSecondary = context.getResources().getColor(R.color.text_color_secondary)
         
     def populateView(layoutView: ViewGroup, diceSet: DiceSet) {
 		Log.d(TAG, "binding cursor to view")
@@ -26,6 +28,7 @@ class DiceSetCursorAdapter(context: Context) extends SimpleCursorAdapter(
 
 		val nameView = layoutView.getChildAt(0).asInstanceOf[TextView]
 		nameView.setText(diceSet.name)
+		nameView.setTextColor(if (diceSet.isNamed) textColor else textColorSecondary)
             
 		val imageView = layoutView.getChildAt(1).asInstanceOf[ImageView]
 		imageView.setImageBitmap(generator.generate(diceSet))

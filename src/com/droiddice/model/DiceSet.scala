@@ -1,8 +1,9 @@
 package com.droiddice.model
 
 import java.util.regex._
+import java.io.Serializable
 
-class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable {
+class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable with Serializable {
 
     var value = sumDice
     var customName: String = _
@@ -33,20 +34,21 @@ class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable 
 	
     def isNamed = customName != null
     
-	def roll = { 
+	def roll() = { 
 	    dice.foreach(die => die.roll)
 	    value = sumDice
 	    value
 	}
 
-	def values = dice.map(_.value)
+	def values() = dice.map(_.value)
 	
-	def valuesString = if (dice.isEmpty) "" else values.map(_.toString()).reduceLeft(_ + "," + _)
+	def valuesString: String = if (dice.isEmpty) "" else values.map(_.toString()).reduceLeft(_ + "," + _)
 	
 	def valuesString_=(s: String) = {
 	    if (s != null && s.length() > 0) {
-    		dice.zip(s.split(".")).foreach {
+    		dice.zip(s.split(",")).foreach {
 	        	case (die, value) => die.value = value.toInt
+	        	case _ => throw new IllegalArgumentException("Missing value")
 			}
     	}
 	}
@@ -59,7 +61,7 @@ class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable 
 	}
 	
 	def canCombineAdjustment(newDie: Die): Boolean
-		= !dice.isEmpty && dice.last.isInstanceOf[AdjustmentDie] && newDie.isInstanceOf[AdjustmentDie]
+		= !dice.isEmpty && dice.last.isInstanceOf[AdjustmentDie] && newDie.isInstanceOf[AdjustmentDie]	
 	
 	def add(newSpec: String): DiceSet = {
 	    val newDie = DiceSetHelper.dieFactory(newSpec)(0)

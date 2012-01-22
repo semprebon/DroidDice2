@@ -29,6 +29,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo
 import com.droiddice.R
 import com.droiddice.datastore.DiceSetDataStore
 import android.support.v4.app.ListFragment
+import com.droiddice.datastore.SavedDiceSet
 
 class PickActivity extends FragmentActivity {
     override protected def onCreate(savedInstanceState: Bundle) {
@@ -55,20 +56,16 @@ class PickFragment extends ListFragment with FragmentViewFinder with LoaderManag
     override def onActivityCreated(savedInstanceState: Bundle) {
     	super.onActivityCreated(savedInstanceState)
     	setEmptyText("No dice sets created")
-    	Log.d(TAG, "onCreate creating adapter")
 		adapter = new DiceSetCursorAdapter(getActivity())
-		Log.d(TAG, "onCreate seting adapter")
 		setListAdapter(adapter)
-		Log.d(TAG, "onCreate initializing loader")
 		getActivity().getSupportLoaderManager().initLoader(0, null, this)
-		Log.d(TAG, "onCreate setting click handler")
 		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			override def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
-	    		val diceSet = view.getTag().asInstanceOf[DiceSet]
-	    		Log.d(TAG, "clicked on " + diceSet.name + " (" + diceSet.spec + ")")
+	    		val diceSet = view.getTag().asInstanceOf[SavedDiceSet]
 	    		val intent = getActivity().getIntent()
-	    		intent.putExtra("Dice", diceSet.spec)
-	    		intent.putExtra("Name", diceSet.name)
+	    		Log.d(TAG, "intent=" + intent)
+	    		Log.d(TAG, "diceSet=" + diceSet)
+	    		ObservableDiceSet.saveTo(intent, new ObservableDiceSet(diceSet))
 	    		getActivity().setResult(Activity.RESULT_OK, intent)
 	    		getActivity().finish()
 	    	}
@@ -88,7 +85,7 @@ class PickFragment extends ListFragment with FragmentViewFinder with LoaderManag
 	
 	override def onContextItemSelected(item: MenuItem): Boolean = {
 		val info = item.getMenuInfo().asInstanceOf[AdapterContextMenuInfo]
-		val diceSet = info.targetView.getTag().asInstanceOf[DiceSet]
+		val diceSet = info.targetView.getTag().asInstanceOf[SavedDiceSet]
 		item.getItemId() match {
 			case R.id.edit_dice_set => { 
 			    	startActivity(
@@ -100,8 +97,8 @@ class PickFragment extends ListFragment with FragmentViewFinder with LoaderManag
 		}
 	}
 
-	def deleteDiceSet(diceSet: DiceSet) {
-	    dataStore.delete(diceSet, () => {
+	def deleteDiceSet(diceSet: SavedDiceSet) {
+	    dataStore.delete(diceSet, (error: Throwable) => {
 	        val run = new Runnable() { override def run { updateDisplay() } }
 	        Log.d(TAG, "running runable")
 	        getActivity().runOnUiThread(run) 

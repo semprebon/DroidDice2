@@ -9,17 +9,21 @@ import com.droiddice.model._
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
+import android.support.v4.app.Fragment
 
 /**
  * Handles interactions on the title bar; updating as the underlying DiceSet is changed, and
  * allowing the user to update the name of the dice set.
  */
-trait TitleBarHandler extends Activity with Observer[DiceSet] {
+trait TitleBarHandler extends Fragment with Observer[DiceSet] with FragmentViewFinder {
 
-	lazy val titleDisplay = findViewById(R.id.dice_set_name).asInstanceOf[TextView]
-	lazy val titleEdit = findViewById(R.id.dice_set_name_edit).asInstanceOf[EditText]
-	lazy val editButton = findViewById(R.id.dice_set_name_edit_button).asInstanceOf[ImageButton]
+	lazy val titleDisplay = findById[TextView](R.id.dice_set_name)
+	lazy val titleEdit = findById[EditText](R.id.dice_set_name_edit)
+	lazy val editButton = findById[ImageButton](R.id.dice_set_name_edit_button)
+	
 	lazy val titleView = titleDisplay.getParent().getParent().asInstanceOf[ViewAnimator]
+	lazy val textColor = getResources().getColor(R.color.text_color)
+	lazy val textColorSecondary = getResources().getColor(R.color.text_color_secondary)
 
 	var diceSet: DiceSet = _
 	
@@ -43,6 +47,8 @@ trait TitleBarHandler extends Activity with Observer[DiceSet] {
     	updateTitleBar(diceSet)
   	}
   
+	def diceSetTextColor(diceSet: DiceSet) = if (diceSet.isNamed) textColor else textColorSecondary
+	
   	/**
   	 * Update the display with the current dice set name
   	 */
@@ -50,6 +56,7 @@ trait TitleBarHandler extends Activity with Observer[DiceSet] {
   	    Log.d(TAG, "updateTitleBar with " + diceSet.spec + "/" + diceSet.name)
   	    if (diceSet != null) {
   	    	titleDisplay.setText(diceSet.name)
+  	    	titleDisplay.setTextColor(diceSetTextColor(diceSet))
   	    } else {
   	        titleDisplay.setText("No Dice")
   	    }
@@ -57,37 +64,5 @@ trait TitleBarHandler extends Activity with Observer[DiceSet] {
 
   	val NO_EDIT = false
   	val EDIT = true
-  	
-  	/**
-  	 * Install UI event handlers
-  	 * 
-  	 * There are basically two events:
-  	 * * when edit button is clicked, switch to edit view and enter edit mode
-  	 * * when user done editing, update object and switch back to display view
-  	 */
-  	def installTitleHandlers() {
-  	    editButton.setVisibility(View.VISIBLE)
-  		titleView.setInAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.grow_from_center))
-  		titleView.setOutAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.shrink_to_center))
-  		titleView.setDisplayedChild(0)
-  		
-  		// only will trigger it if no physical keyboard is open
-  		editButton.setOnClickListener(new View.OnClickListener() {
-  			override def onClick(view: View) {
-  			    titleEdit.setText(diceSet.name)
-  				titleView.setDisplayedChild(1)
-  				titleView.post(new Runnable { def run { titleEdit.requestFocusFromTouch } })
-  			}
-  		})
-    
-  		titleEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-  			override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
-  				diceSet.name = titleEdit.getText().toString()
-  				updateTitleBar(diceSet)
-  				titleView.setDisplayedChild(0)
-  				return false
-  			}
-  		})
-  	}
-  
+  	  
 }

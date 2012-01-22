@@ -8,6 +8,9 @@ import android.app.Activity
 import android.database.SQLException
 import android.net.Uri
 import android.content.ContentValues
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
 
 /**
  * This class provides a wrapper around the Dice Set content provider for doing model-level
@@ -27,78 +30,78 @@ class DiceSetDataStore(activity: Activity) {
     /**
      * Creates a new diceset. Executes after if successful, otherwise displays an error message
      */
-	def create(diceSet: DiceSet, after: () => Unit) {
+	def create(diceSet: SavedDiceSet, after: (Throwable) => Unit) {
    	    val process = new AsyncStoreProcess(after) {
-	        override def process(diceSet: DiceSet): Int = {
+	        override def process(diceSet: SavedDiceSet): Long = {
 	        	val values = DiceSetMapper.diceSetToValues(diceSet)
 
 	        	Log.d(TAG, "Adding new DiceSet " + diceSet)
 	        	val itemUri = contentResolver.insert(DiceSetProvider.CONTENT_URI, values)
 	        	Log.d(TAG, "Added " + itemUri)
-	        	itemUri.getLastPathSegment().toInt
+	        	itemUri.getLastPathSegment().toLong
 	        }
    	    }
    	    process.execute(diceSet)
 	}
 	
-	def update(diceSet: DiceSet, after: () => Unit) {
+	def update(diceSet: SavedDiceSet, after: (Throwable) => Unit) {
    	    val process = new AsyncStoreProcess(after) {
-	        override def process(diceSet: DiceSet): Int = {
-	        	val id = idForName(diceSet.name)
-	        	id match {
-		        	case Some(id) => {
-		        		val values = DiceSetMapper.diceSetToValues(diceSet)
-		        		Log.d(TAG, "Updating DiceSet " + id)
-		        		val itemUri = DiceSetProvider.uriFor(id)
-		        		contentResolver.update(itemUri, values, null, null)
-		        		return id
-		        	}
-		        	case None => throw new SQLException("Updating nonexistant record " + diceSet)
-		        }
+	        override def process(diceSet: SavedDiceSet): Long = {
+	        	if (!diceSet.isNamed) deleteAnonymousDuplicate(diceSet.spec)
+	        	val id = diceSet.id
+        		val values = DiceSetMapper.diceSetToValues(diceSet)
+        		Log.d(TAG, "Updating DiceSet " + diceSet)
+        		val itemUri = DiceSetProvider.uriFor(id)
+        		contentResolver.update(itemUri, values, null, null)
+        		return id
 	        }
    	    }
    	    process.execute(diceSet)
 	}
 	
-	def rename(diceSet: DiceSet, newName: String, after: () => Unit) {
+	def rename(diceSet: SavedDiceSet, newName: String, after: (Throwable) => Unit) {
 	    val process = new AsyncStoreProcess(after) {
-	        override def doInBackground(items: Object*) : Int = {
-	            val diceSet = items(0).asInstanceOf[DiceSet]
+	        override def doInBackground(items: Object*) : Long = {
+	            val diceSet = items(0).asInstanceOf[SavedDiceSet]
 	            val newName = items(1).asInstanceOf[String]
-	    		val id = idForName(diceSet.name)
-	    		id match {
-		    		case Some(id) => {
-		    			Log.d(TAG, "Renaming DiceSet " + id + " to " + newName)
-		    			val itemUri = DiceSetProvider.uriFor(id)
-		    			val values = new ContentValues()
-		    			values.put(DiceSetProvider.NAME, newName)
-		    			contentResolver.update(itemUri, values, null, null)
-		    			return id
-		    		}
-		    		case None => throw new SQLException("Updating nonexistant record " + diceSet.name)
-	    		}
+	        	val id = diceSet.id
+	        	if (!diceSet.isNamed) deleteAnonymousDuplicate(diceSet.spec)
+    			Log.d(TAG, "Renaming DiceSet " + id + " to " + newName)
+    			val itemUri = DiceSetProvider.uriFor(id)
+    			val values = new ContentValues()
+    			values.put(DiceSetProvider.NAME, newName)
+    			contentResolver.update(itemUri, values, null, null)
+    			return id
 	    	}
 	    }
 	    process.execute(diceSet, newName)
 	}
 
-	def delete(diceSet: DiceSet, after: () => Unit) {
+	def delete(diceSet: SavedDiceSet, after: (Throwable) => Unit) {
    	    val process = new AsyncStoreProcess(after) {
-	        override def process(diceSet: DiceSet): Int = {
-	        	val id = idForName(diceSet.name)
-	        	id match {
-		        	case Some(id) => {
-		        		val values = DiceSetMapper.diceSetToValues(diceSet)
-		        		Log.d(TAG, "Deleting DiceSet " + id)
-		        		val itemUri = DiceSetProvider.uriFor(id)
-		        		contentResolver.delete(itemUri, null, null)
-		        		return id
-		        	}
-		        	case None => throw new SQLException("Deleting nonexistant record " + diceSet.name)
-		        }
+	        override def process(diceSet: SavedDiceSet): Long = {
+	        	val id = diceSet.id
+	        	val values = DiceSetMapper.diceSetToValues(diceSet)
+        		Log.d(TAG, "Deleting DiceSet " + id)
+        		val itemUri = DiceSetProvider.uriFor(id)
+        		contentResolver.delete(itemUri, null, null)
+        		return id
 	        }
    	    }
    	    process.execute(diceSet)
+	}
+	
+	def fetchByName(name: String, after: (SavedDiceSet) => Unit) {
+   	    val process = new AsyncQuery(after) {
+	        override def process(selection: String, args: Array[String]): SavedDiceSet = {
+	        	Log.d(TAG, "Quering DiceSetProvider for " + name)
+	        	val cursor = contentResolver.query(uri, DiceSetProvider.PUBLIC_COLUMNS,  DiceSetProvider.NAME + "=?", Array(name), null)
+	        	val diceSet = if (cursor.moveToFirst()) DiceSetMapper.cursorToDiceSet(cursor) else null
+	        	cursor.close()
+	        	return diceSet
+	        }
+   	    }
+   	    process.execute(DiceSetProvider.NAME + "=?", Array(name))
 	}
 	
 	/**
@@ -106,43 +109,94 @@ class DiceSetDataStore(activity: Activity) {
 	 */
 	private def nameExistsAsync(name: String): Boolean = !idForName(name).isEmpty
 	
+	private def deleteAnonymousDuplicate(spec: String) {
+		contentResolver.delete(uri, DiceSetProvider.SPEC + "=? and " + DiceSetProvider.NAME + " is null", Array(spec))
+	}
+	
 	/**
 	 * return id for a given name
 	 */
-	private def idForName(name: String): Option[Int] = {
+	private def idForName(name: String): Option[Long] = {
 		Log.d(TAG, "Quering DiceSetProvider for " + name)
 		val cursor = activity.managedQuery(uri, 
 			Array(DiceSetProvider._ID), DiceSetProvider.NAME + "=?", Array(name), null)
-	    val id = if (cursor.moveToFirst()) Some(cursor.getInt(0)) else None
+	    val id = if (cursor.moveToFirst()) Some(cursor.getLong(0)) else None
 	    cursor.close()
 	    return id
 	}
 
+	/**
+	 * return id for anonymous dice set with given spec
+	 */
+	private def idForAnonymous(spec: String): Option[Long] = {
+		Log.d(TAG, "Quering DiceSetProvider for " + spec)
+		val cursor = activity.managedQuery(uri, 
+			Array(DiceSetProvider._ID), DiceSetProvider.SPEC + "=? and " + DiceSetProvider.NAME + "=null", Array(spec), null)
+	    val id = if (cursor.moveToFirst()) Some(cursor.getLong(0)) else None
+	    cursor.close()
+	    return id
+	}
+
+	/**
+	 * Runs a query asynchronously and returns the first dice set in the results to a callback method
+	 */
+	class AsyncQuery(after: (SavedDiceSet) => Unit) extends AsyncTask[Object, Void, SavedDiceSet] {
+	    var dialog: ProgressDialog = _
+	    
+		override protected def doInBackground(items: Object*): SavedDiceSet = {
+	        val selection = items(0).asInstanceOf[String]
+	        val args = items(1).asInstanceOf[Array[String]]
+	        process(selection, args)
+		}
+		
+	    protected def process(seletion: String, args: Array[String]): SavedDiceSet = { 
+	        throw new UnsupportedOperationException("Must override process or doInBackground")
+	    }
+	    
+		override protected def onPreExecute() {
+			dialog = new ProgressDialog(activity)
+			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+			dialog.setMessage("Checking...")
+			dialog.show()
+		}
+
+		override protected def onPostExecute(result: SavedDiceSet) {
+			dialog.dismiss()
+			after(result)
+		}
+	}
+	
     /**
      * This should really by DiceSet, not Object; but due to bug, scala sometimes has problems 
      * passing varargs; but works with Object... 
      */ 
-	class AsyncStoreProcess(after: () => Unit) extends AsyncTask[Object, Void, Int] {
-	    var dialog: ProgressDialog = _
+	class AsyncStoreProcess(after: (Throwable) => Unit) extends AsyncTask[Object, Void, Long] {
+	    var dialog: Dialog = _
+	    var exception: Throwable = _
 	    
-		override protected def doInBackground(items: Object*): Int = {
-		    process(items(0).asInstanceOf[DiceSet])
+		override protected def doInBackground(items: Object*): Long = {
+	        try {
+	        	process(items(0).asInstanceOf[SavedDiceSet])
+	        } catch {
+	            case ex: Throwable => { exception = ex }
+	            return -1
+	        }
 		}
 		
-	    protected def process(diceSet: DiceSet): Int = { 
+	    protected def process(diceSet: SavedDiceSet): Long = { 
 	        throw new UnsupportedOperationException("Must override process or doInBackground")
 	    }
 	    
 		override protected def onPreExecute() {
 		    Log.d(TAG, "onPreExecute")
 		        		
-			dialog = ProgressDialog.show(activity, "Dice", "Updating...", true)
+			dialog = ProgressDialog.show(activity, null, "Updating...", true)
 		}
 
-		override protected def onPostExecute(result: Int) {
+		override protected def onPostExecute(result: Long) {
 		    Log.d(TAG, "onPostExecute")
 			dialog.dismiss()
-		    after()
+			after(exception)
 		}
 	}
 

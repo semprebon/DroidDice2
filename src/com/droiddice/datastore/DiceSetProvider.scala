@@ -118,6 +118,7 @@ class DiceSetProvider extends ContentProvider {
             originalSelection: String, originalArgs: Array[String]): Int = {
         val (selection, args) = addIdToSelection(originalSelection, originalArgs, uri)
         val count = db.update(DICE_SET_TABLE, values, selection, args)
+        Log.d(TAG, "updated " + count + " dicesets")
         getContext().getContentResolver().notifyChange(uri, null)
         return count
     }
@@ -130,6 +131,7 @@ class DiceSetProvider extends ContentProvider {
         Log.d(TAG, "deleting " + selection + " " + args)
         args.foreach(arg => Log.d(TAG, "arg=" + arg))
         val count = db.delete(DICE_SET_TABLE, selection, args)
+        Log.d(TAG, "deleted " + count + " dicesets")
         getContext().getContentResolver().notifyChange(uri, null)
         return count
     }
@@ -148,6 +150,7 @@ class DiceSetProvider extends ContentProvider {
      */
     def deleteDiceSet(name: String) {
         db.delete(DICE_SET_TABLE, "name=?", Array(name))
+        Log.d(TAG, "deleted " + name)
     }
 
     def findByName(name: String): SavedDiceSet = {
@@ -163,7 +166,7 @@ class DiceSetProvider extends ContentProvider {
     def findAnonymous(spec: String): SavedDiceSet = {
         val cursor = db.query(true, DICE_SET_TABLE, 
                 ALL_COLUMNS,
-                "spec=?", Array(spec),
+                "spec=? and name is null", Array(spec),
                 null, null, null, null)
         val diceSet = if (cursor != null && cursor.moveToFirst()) diceSetAt(cursor) else null
         cursor.close()

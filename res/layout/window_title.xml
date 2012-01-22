@@ -11,7 +11,7 @@
         android:id="@+id/dice_set_name_display_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-
+
         <TextView
             android:id="@+id/dice_set_name"
             android:layout_width="fill_parent"
@@ -22,6 +22,7 @@
             android:singleLine="true"
             android:text="@string/dummy_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android1:textColor="@color/text_color_secondary"
             android1:textSize="30sp" />
 
         <ImageButton
