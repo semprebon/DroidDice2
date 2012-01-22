@@ -31,23 +31,11 @@ import com.droiddice.datastore.DiceSetDataStore
 import android.support.v4.app.ListFragment
 import com.droiddice.datastore.SavedDiceSet
 
-class PickActivity extends FragmentActivity {
-    override protected def onCreate(savedInstanceState: Bundle) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.pick_dice_set_activity)
-
-        // Create the list fragment and add it as our sole content.
-        if (getSupportFragmentManager().findFragmentById(R.id.pick_fragment) == null) {
-            val list = new PickFragment()
-            getSupportFragmentManager().beginTransaction().add(R.id.pick_fragment, list).commit()
-        }
-    }
-}
-    
 class PickFragment extends ListFragment with FragmentViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
 //class PickDiceSetActivity extends Activity with ViewFinder with LoaderManager.LoaderCallbacks[Cursor] {
 
     lazy val dataStore = new DiceSetDataStore(getActivity())
+	lazy val activity = getActivity().asInstanceOf[RollActivity]
     
     var adapter: SimpleCursorAdapter = _
     
@@ -65,9 +53,8 @@ class PickFragment extends ListFragment with FragmentViewFinder with LoaderManag
 	    		val intent = getActivity().getIntent()
 	    		Log.d(TAG, "intent=" + intent)
 	    		Log.d(TAG, "diceSet=" + diceSet)
-	    		ObservableDiceSet.saveTo(intent, new ObservableDiceSet(diceSet))
-	    		getActivity().setResult(Activity.RESULT_OK, intent)
-	    		getActivity().finish()
+	    		activity.changeDiceSet(new ObservableDiceSet(diceSet))
+	    		activity.showRollView()
 	    	}
 		})
 		registerForContextMenu(getListView())

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/roll_activity"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+	<fragment class="com.droiddice.ui.RollFragment"
+        android:id="@+id/roll_fragment"
+        android:layout_width="fill_parent" 
+        android:layout_height="fill_parent"
+        android:layout_weight="1" />
+   <fragment
+        android:id="@+id/pick_fragment"
+        android:name="android.support.v4.app.DialogFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        class="com.droiddice.ui.PickFragment" />
+
+ </ViewAnimator>

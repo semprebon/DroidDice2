@@ -30,4 +30,5 @@
     <item name="android:textSize">24sp</item>
     <item name="android:textColor">#FFFF</item>
 </style>
+<dimen name="pick_fragment_min_size">200sp</dimen>
 </resources>

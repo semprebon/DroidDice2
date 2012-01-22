@@ -58,7 +58,7 @@ class EditActivity extends FragmentActivity {
  
 	override def onCreate(savedInstanceState: Bundle) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.change_dice_activity)
+		setContentView(R.layout.edit_activity)
 	}
 	
   	def errorDialog(message: String) {
