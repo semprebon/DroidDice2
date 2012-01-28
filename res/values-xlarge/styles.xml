@@ -1,48 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!-- Dimensions -->
-
-    <dimen name="die_padding">2dp</dimen>
-    <dimen name="die_view_size">72dp</dimen>
-    <dimen name="gallery_margin">36dp</dimen>
-    <dimen name="gallery_spacing">3dp</dimen>
-    <dimen name="gallery_width">260dp</dimen>
-    <dimen name="list_view_die_size">40dp</dimen>
-    <dimen name="pick_fragment_min_size">200sp</dimen>
 
     <style name="label" parent="@android:style/Widget.TextView">
         <item name="android:ellipsize">end</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textSize">20sp</item>
+    	<item name="android:textSize">30sp</item>
         <item name="android:gravity">center</item>
-        </style>
-    
-	<!-- Title Bar -->
-    <style name="title" parent="label">
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-    </style>
-    
-    <style name="title_display" parent="title">
-        <item name="android:textColor">@color/text_color_secondary</item>
-    </style>
-    
-    <style name="title_edit" parent="title">
-    </style>
-    
-    <!-- Result -->
-    <style name="result" parent="@android:style/Widget.TextView">
-        <item name="android:shadowColor">#000</item>
-        <item name="android:shadowDx">4</item>
-        <item name="android:shadowDy">4</item>
-        <item name="android:shadowRadius">0.1</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-        <item name="android:textSize">72sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
     
     <!-- Dice Grid -->
     <style name="dice_grid" parent="@android:style/Widget.GridView">
-        <item name="android:numColumns">5</item>
+        <item name="android:numColumns">8</item>
     </style>
 
     <!-- Recent Picks -->
@@ -50,11 +18,11 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-    	<item name="android:textSize">12sp</item>
     </style>
 
     <!-- Action Buttons -->
     <style name="action_button" parent="label">
+		<item name="android:textSize">30sp</item>
         <item name="android:layout_height">70dp</item>
     </style>
 
@@ -92,20 +60,20 @@
     </style>
 
     <!-- Gallery -->
-    <style name="gallery_title" parent="android:Widget.TextView">
+    <style name="gallery_title" parent="@android:style/Widget.TextView">
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
-        <item name="android:textSize">20dp</item>
+    	<item name="android:textSize">32dp</item>
         <item name="android:textColor">#FF0</item>
     </style>
 
-    <style name="gallery_grid" parent="android:Widget.GridView">
-        <item name="android:horizontalSpacing">2dp</item>
-        <item name="android:numColumns">4</item>
-        <item name="android:scrollbarAlwaysDrawHorizontalTrack">true</item>
-        <item name="android:verticalSpacing">2dp</item>
-    </style>
-
+	<style name="gallery_grid" parent="@android:style/Widget.GridView">
+    	<item name="android:horizontalSpacing">6dp</item>
+	    <item name="android:numColumns">4</item>
+    	<item name="android:scrollbarAlwaysDrawHorizontalTrack">true</item>
+    	<item name="android:verticalSpacing">3dp</item>
+	</style>
+    
 </resources>

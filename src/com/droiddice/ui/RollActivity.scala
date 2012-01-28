@@ -22,6 +22,7 @@ class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 
 	var currentDiceSet = new ObservableDiceSet("d6", null)
 	lazy val rollFragment = findFragmentById[RollFragment](R.id.roll_fragment)
+	lazy val pickViewAlwaysOn = !(rollFragment.getView().getParent().isInstanceOf[ViewAnimator])
 	
 	val TAG = "RollDiceActivity"
  
@@ -29,6 +30,7 @@ class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 	override def onCreate(savedInstanceState: Bundle) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.roll_activity)
+		
         // Create the list fragment and add it as content for picklist.
         if (getSupportFragmentManager().findFragmentById(R.id.pick_fragment) == null) {
             val list = new PickFragment()
@@ -49,6 +51,7 @@ class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 	def showFragmentView(index: Int) {
 	    rollFragment.getView().getParent() match {
 	        case f: ViewAnimator => f.setDisplayedChild(index)
+	        case _ =>
 	    }
 	}
 	
@@ -88,7 +91,11 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	}
 	
 	override def onCreateView(inflater: LayoutInflater, container: ViewGroup, state: Bundle): View = {
-		inflater.inflate(R.layout.roll_fragment, container)
+		val view = inflater.inflate(R.layout.roll_fragment, container)
+		if (container.isInstanceOf[LinearLayout]) {
+			findById[Button](R.id.dice_sets_selection_button).setVisibility(View.GONE)
+		}
+		view
 	}
 	
 	/** 

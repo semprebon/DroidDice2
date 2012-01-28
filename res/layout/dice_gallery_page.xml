@@ -6,31 +6,24 @@
     android:background="@drawable/semitransparent_gradient_inverted"
     android:gravity="top"
     android:orientation="vertical" >
-
+
     <TextView
         android:id="@+id/dice_gallery_page_name"
+        style="@style/gallery_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:text="@string/dummy_name"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
+
     <GridView
         android:id="@+id/dice_gallery_page_grid"
+        style="@style/gallery_grid"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_gravity="top"
-        android:gravity="center"
-        android:horizontalSpacing="2dp"
-        android:numColumns="4"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:verticalSpacing="2dp" >
+        android:gravity="center" >
 
         <!-- Preview: listitem=@android:layout/simple_list_item_1 -->
     </GridView>
 
 </LinearLayout>
-

@@ -16,9 +16,9 @@
     <fragment
         android:id="@+id/pick_fragment"
         android:name="android.support.v4.app.DialogFragment"
-        android:layout_width="400sp"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
+        android:layout_weight="2"
         class="com.droiddice.ui.PickFragment" />
 
 </LinearLayout>

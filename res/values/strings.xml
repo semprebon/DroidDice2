@@ -6,7 +6,8 @@
     <string name="edit_button_description">edit</string>
     <string name="dummy_text">dummy</string>
     <string name="dummy_result">12</string>
-    <string name="dummy_name">Than: Telekinesis Activate</string>
+    <!-- string name="dummy_name">Than: Telekinesis Activate</string -->
+    <string name="dummy_name">Fighting</string>
     <dimen name="bottom_button_height">100dp</dimen>
     <string name="create">New</string>
     <string name="move_left">&lt;</string>
