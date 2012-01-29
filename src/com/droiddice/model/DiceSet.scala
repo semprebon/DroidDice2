@@ -3,10 +3,12 @@ package com.droiddice.model
 import java.util.regex._
 import java.io.Serializable
 
-class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable with Serializable {
+class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Serializable {
 
-    var value = sumDice
+    var value = results
     var customName: String = _
+    
+    var strategy: Strategy = new AddStrategy()
     
     def count = dice.size
 	def spec = DiceSetHelper.specForDice(dice)
@@ -18,9 +20,9 @@ class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable 
         this.name = newName 
     }
 
-	def sumDice:Int = if (dice.isEmpty) 0 else values.reduceLeft(_ + _)
+	def results:Array[Int] = if (dice.isEmpty) Array(0) else Array(values.reduceLeft(_ + _))
 
-    def display = if (dice.isEmpty) "" else sumDice.toString
+    def display = if (dice.isEmpty) "" else results.toString
 
     def name = if (customName != null) customName else spec
     
@@ -36,7 +38,7 @@ class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Rollable 
     
 	def roll() = { 
 	    dice.foreach(die => die.roll)
-	    value = sumDice
+	    value = results
 	    value
 	}
 
@@ -120,9 +122,19 @@ object DiceSetHelper {
 
     def join(seq: Seq[String], sep: String) = seq.reduceLeft((a:String,b:String) => a + sep + b)
     
+    private def seperateStrategy(s: String): (String, String) = {
+        val matcher = Pattern.compile("(highest)\\((.+)\\)").matcher(s)
+        if (matcher.find()) (matcher.group(1), matcher.group(2)) else ("add", s)
+    }
+    
 	def diceStringToArray(s: String): Array[Die] = {
-		if (s.length == 0) return new Array[Die](0)
-		val dieTypes = s.replace("-", "+-").split("\\+").filter(t => t.length > 0)
+	    val (strategyStr, diceStr) = seperateStrategy(s)
+	    diceStringWithoutStrategyToArray(diceStr)
+	}
+	
+	def diceStringWithoutStrategyToArray(s: String): Array[Die] = {
+	    if (s.length == 0) return new Array[Die](0)
+		val dieTypes = s.replace("-", "+-").split("\\+|,").filter(t => t.length > 0)
 		val dice = dieTypes.flatMap(t => dieFactory(t)).toArray
 		dice
 	} 
@@ -149,3 +161,7 @@ object DiceSetHelper {
 }
 	
 class InvalidSpecificationException(message: String) extends Exception(message)
+
+class Strategy {}
+class AddStrategy extends Strategy {}
+class HighestStrategy extends Strategy {}
