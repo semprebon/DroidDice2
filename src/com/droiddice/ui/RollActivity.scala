@@ -72,7 +72,7 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	
 	lazy val historyView = findById[ViewGroup](R.id.dice_set_history)
 	lazy val resultTextView = findById[TextView](R.id.dice_result_text)
-	lazy val diceLayout = findById[GridView](R.id.dice_layout)
+	lazy val diceLayout = findById[AdapterView[DiceViewAdapter]](R.id.dice_layout)
 	lazy val activity = getActivity().asInstanceOf[RollActivity]
 	
 	def currentDiceSet() = activity.currentDiceSet
@@ -123,9 +123,10 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	
 	def updateResult() {
 		resultTextView.setText(currentDiceSet.display)
-    	
+    	val layout = getActivity().findViewById(R.id.dice_layout)
     	val dice: Array[Die] = currentDiceSet.dice.toArray
     	val adapter = new DiceViewAdapter(getActivity().getApplication(), dice)
+		Log.d(TAG, "adapter has " + adapter.getCount() + "  dice has " + dice.length)
     	diceLayout.setAdapter(adapter)
 	}
 

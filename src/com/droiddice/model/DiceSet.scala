@@ -96,11 +96,16 @@ object DiceSetHelper {
     }
     
 	def singleDieFactory(spec: String): Die = {
-	    val (t, size) = split(spec, diePattern)
-		if (t == "d" && size == "F") new FudgeDie
-		else if (t == "s") new SavageDie(size.toInt)
-		else if (t == "d") new SimpleDie(size.toInt)
-		else new AdjustmentDie(size.toInt) 
+	    try {
+		    val (t, size) = split(spec, diePattern)
+			if (t == "d" && size == "F") new FudgeDie
+			else if (t == "s") new SavageDie(size.toInt)
+			else if (t == "d") new SimpleDie(size.toInt)
+			else new AdjustmentDie(size.toInt)
+	    } catch {
+	        case e: NumberFormatException => 
+	            throw new InvalidSpecificationException("\"" + spec + "\" is not a valid specification")
+	    }
 	}
 
 	def dieFactory(s : String): Seq[Die] = {
@@ -142,3 +147,5 @@ object DiceSetHelper {
 	
 	def specForDice(dice: Iterable[Die]): String = mergeDieSpecs(dice).replace("+-", "-").replace("++", "+")
 }
+	
+class InvalidSpecificationException(message: String) extends Exception(message)

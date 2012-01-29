@@ -33,6 +33,7 @@ import com.droiddice.datastore.SavedDiceSet
 object EditActivity {
     
   	val DIALOG_NAME_EXISTS = 1
+  	val DIALOG_SPECIFICATION = 2
   	
     /**
      * Create an intent to edit a dice set with this activity
@@ -44,7 +45,6 @@ object EditActivity {
     	}
 		return intent
     }
-    
     
 }
 
@@ -61,6 +61,12 @@ class EditActivity extends FragmentActivity {
 		setContentView(R.layout.edit_activity)
 	}
 	
+  	override def onCreateOptionsMenu(menu: Menu): Boolean = {
+  		val inflater = getMenuInflater()
+  		inflater.inflate(R.menu.edit_options_menu, menu)
+  		return true
+  	}    
+
   	def errorDialog(message: String) {
 		    val builder = new AlertDialog.Builder(this)
 		    builder.setMessage(message)
@@ -107,7 +113,17 @@ class EditActivity extends FragmentActivity {
 		}
 	}
   
-  	override def onCreateDialog(id: Int): Dialog = {
+	override def onOptionsItemSelected(item: MenuItem): Boolean = {
+		item.getItemId() match {
+			case R.id.specify_menu_item => {
+			    showDialog(EditActivity.DIALOG_SPECIFICATION)
+			    return true
+			}
+			case _ => return super.onOptionsItemSelected(item)
+		}
+	}
+	
+	override def onCreateDialog(id: Int): Dialog = {
   	    val dialog = id match {
   		    case EditActivity.DIALOG_NAME_EXISTS => {
   		    	new AlertDialog.Builder(this).setMessage("Name aleady used. Overwrite?")
@@ -123,6 +139,28 @@ class EditActivity extends FragmentActivity {
   		    				def onClick(dialog: DialogInterface, id: Int) { dialog.cancel() }
   		    			})
   		    		.create()
+  		    }
+  		    case EditActivity.DIALOG_SPECIFICATION => {
+  		    	val dialog = new Dialog(this)
+  		    	dialog.setContentView(R.layout.specification_dialog)
+  		    	dialog.setTitle("Enter Specification")
+
+  		    	val specificationEdit = dialog.findViewById(R.id.specification_edit).asInstanceOf[EditText]
+  		    	specificationEdit.setText(fragment.currentDiceSet.spec)
+  		    	specificationEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+  		    		override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
+  		    		    try {
+  		    		    	val diceSet = new SavedDiceSet(specificationEdit.getText().toString(), null.asInstanceOf[Int])
+			    		    diceSet.customName = fragment.currentDiceSet.customName
+			    			fragment.currentDiceSet = new ObservableDiceSet(diceSet)
+			    		    fragment.createCurrentSelection()
+			    			dialog.dismiss()
+  		    		    } catch {
+  		    		        case e: InvalidSpecificationException => dialog.dismiss()
+  		    		    }
+  		    			false
+  		    		}})
+  		    	dialog
   		    }
   		}
   		return dialog
