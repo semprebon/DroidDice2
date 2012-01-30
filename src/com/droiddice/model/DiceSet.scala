@@ -3,24 +3,28 @@ package com.droiddice.model
 import java.util.regex._
 import java.io.Serializable
 
-class DiceSet(var dice: RandomAccessSeq[Die], newName: String) extends Serializable {
+class DiceSet(var dice: RandomAccessSeq[Die], var strategy: String, newName: String) extends Serializable {
 
     var value = results
     var customName: String = _
     
-    var strategy: Strategy = new AddStrategy()
-    
     def count = dice.size
-	def spec = DiceSetHelper.specForDice(dice)
-	
+	def spec = DiceSetHelper.specForDice(strategy, dice)
+
+	def this(dice: RandomAccessSeq[Die], newName: String) = this(dice, "add", newName)
 	def this(dice: RandomAccessSeq[Die]) = this(dice, null)
-    def this(s: String) = this(DiceSetHelper.diceStringToArray(s))
+    def this(s: String) = this(DiceSetHelper.diceStringToArray(s), DiceSetHelper.diceStringToStrategy(s), null)
     def this(s: String, newName: String) = { 
         this(s)
         this.name = newName 
     }
 
-	def results:Array[Int] = if (dice.isEmpty) Array(0) else Array(values.reduceLeft(_ + _))
+	def results:Array[Int] = {
+	    if (dice.isEmpty) Array(0) 
+	    else if (strategy == "add") Array(values.reduceLeft(_ + _))
+	    else if (strategy == "max") Array(values.reduceLeft((a: Int, b: Int) => if (a < b) b else a ))
+	    else throw new RuntimeException("Diceset has no strategy")
+	}
 
     def display = if (dice.isEmpty) "" else results.toString
 
@@ -123,12 +127,12 @@ object DiceSetHelper {
     def join(seq: Seq[String], sep: String) = seq.reduceLeft((a:String,b:String) => a + sep + b)
     
     private def seperateStrategy(s: String): (String, String) = {
-        val matcher = Pattern.compile("(highest)\\((.+)\\)").matcher(s)
+        val matcher = Pattern.compile("(max)\\((.+)\\)").matcher(s)
         if (matcher.find()) (matcher.group(1), matcher.group(2)) else ("add", s)
     }
     
 	def diceStringToArray(s: String): Array[Die] = {
-	    val (strategyStr, diceStr) = seperateStrategy(s)
+	    val (strategy, diceStr) = seperateStrategy(s)
 	    diceStringWithoutStrategyToArray(diceStr)
 	}
 	
@@ -139,6 +143,11 @@ object DiceSetHelper {
 		dice
 	} 
  
+	def diceStringToStrategy(s: String): String = {
+	    val (strategy, diceStr) = seperateStrategy(s)
+	    strategy
+	}
+	
     def mergeNextDie(result: List[Tuple2[Int, String]], newDie: Die): List[Tuple2[Int, String]] = {
         val (count, lastDieSpec) = result.last
         if (count == 0) return List((1, newDie.spec))
@@ -154,10 +163,16 @@ object DiceSetHelper {
 	def mergeDieSpecs(dice: Iterable[Die]): String = {
 	    val specList: List[Tuple2[Int, String]] = dice.foldLeft(List((0,""))) (mergeNextDie)
 	    val specs: List[String] = specList.map(specAndCountToSpec)
-	    specs.reduceLeft((a: String, b:String) => a+"+"+b)
+	    specs.reduceLeft(_+","+_)
 	}
 	
-	def specForDice(dice: Iterable[Die]): String = mergeDieSpecs(dice).replace("+-", "-").replace("++", "+")
+	def specForDice(strategy: String, dice: Iterable[Die]): String = {
+	    if (strategy == "add") {
+	        mergeDieSpecs(dice).replace(",-", "-").replace(",+", "+").replace(",", "+")
+	    } else {
+	        strategy + "(" + mergeDieSpecs(dice) + ")"
+	    }
+	}
 }
 	
 class InvalidSpecificationException(message: String) extends Exception(message)
