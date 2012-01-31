@@ -45,7 +45,8 @@ class AddDiceSetSpec extends Spec with ShouldMatchers {
     it("should have strategy of Add") {
         System.out.println("Starting test")
         d.valuesString = "1,2,3"
-        d.results should be(Array[Int](5))
+        d.results.length should be(1)
+        d.results.apply(0) should be(5)
     }
   }
 
@@ -78,7 +79,7 @@ class AddDiceSetSpec extends Spec with ShouldMatchers {
       d.count should be(0)
     }
     it("should have values of empty array") {
-    	d.values should be(ArrayBuffer[Int]())
+    	d.values.length should be(0)
     }
     it("should have values string of empty string") {
         d.valuesString should be("")

@@ -1,0 +1,11 @@
+bin/*
+*.log
+proguard.cfg
+local.properties
+gen/*
+TEST*.txt
+.settings
+.project
+.classpath
+.cache
+test/android
