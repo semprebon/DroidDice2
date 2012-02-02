@@ -20,7 +20,7 @@ import android.view.LayoutInflater
 
 class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 
-	var currentDiceSet = new ObservableDiceSet("d6", null)
+	var currentDiceSet = new ObservableDiceSet("2d6", null)
 	lazy val rollFragment = findFragmentById[RollFragment](R.id.roll_fragment)
 	lazy val pickViewAlwaysOn = !(rollFragment.getView().getParent().isInstanceOf[ViewAnimator])
 	

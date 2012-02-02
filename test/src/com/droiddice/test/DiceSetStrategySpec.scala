@@ -1,3 +1,5 @@
+package com.droiddice.model.test
+
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 import org.scalatest.Spec
@@ -7,7 +9,7 @@ import scala.collection.mutable.ArrayBuffer
 import com.droiddice.test.DiceSetDistribution
 
 @RunWith(classOf[JUnitRunner])
-class MaxDiceSetSpec extends Spec with ShouldMatchers {
+class DiceSetStrategySpec extends Spec with ShouldMatchers {
 
   // Creation Tests
     
@@ -66,4 +68,30 @@ class MaxDiceSetSpec extends Spec with ShouldMatchers {
         d.display should be("5 2")
     }
   }
+
+  // Count Strategy
+    
+  	describe("A dice set created from 'count(5d10,>6)' string") {
+  		val d = new DiceSet("count(5d10,>6)")
+  		it("should me made up of 5 d10 dice") {
+  			d.dice should have size(5)
+  			assert(d.dice.forall(_.spec == "d10"))
+  		}
+  		it("should have a strategy of max	") {
+  			d.strategy.name should be("count")
+  		}
+  		it("should have a spec of the original string") {
+  			d.spec should be("count(5d10,>6)")
+  		}
+  		it("should roll values between 0 and 5") {
+  			val dist = new DiceSetDistribution(d)
+  			dist.min should be(0)
+  			dist.max should be(5)
+  		}
+  		it("should have strategy of max") {
+  			d.valuesString = "1,8,7,6,10"
+  			d.results.length should be(1)
+  			d.results.apply(0) should be(3)
+  		}
+  	}
 }

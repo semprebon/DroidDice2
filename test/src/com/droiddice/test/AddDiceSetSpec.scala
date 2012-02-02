@@ -6,18 +6,37 @@ import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
 import com.droiddice.model._
 import scala.collection.mutable.ArrayBuffer
+import org.scalatest.matchers.BePropertyMatcher
 
 @RunWith(classOf[JUnitRunner])
 class AddDiceSetSpec extends Spec with ShouldMatchers {
 
-  // Creation Tests
+	// Creation Tests
     
-  describe("a die created from 's10' string") {
-    var d = DiceSetHelper.singleDieFactory("s10")
-    it("should create savage die") {
-      d.spec should be("s10")
-    }
-  }
+	describe("a die created from 'd4' string") {
+		var d = DiceSetHelper.singleDieFactory("s10")
+		it("should create simple die") {
+			assert(d.isInstanceOf[SimpleDie])
+		}
+	}
+	describe("a die created from 's10' string") {
+		var d = DiceSetHelper.singleDieFactory("s10")
+		it("should create savage die") {
+			assert(d.isInstanceOf[SavageDie])
+		}
+	}
+	describe("a die created from 'dF' string") {
+		var d = DiceSetHelper.singleDieFactory("dF")
+		it("should create Fudge die") {
+			assert(d.isInstanceOf[FudgeDie])
+		}
+	}
+	describe("a die created from 'dS' string") {
+		var d = DiceSetHelper.singleDieFactory("dS")
+		it("should create Sign die") {
+			assert(d.isInstanceOf[SignDie])
+		}
+	}
 
   describe("A dice set created from '2d4+d6-1' string") {
     val d = new DiceSet("2d4+d6-1")
@@ -103,7 +122,7 @@ class AddDiceSetSpec extends Spec with ShouldMatchers {
   }
 
   describe("a dice set with a specific name") {
-    val d = new DiceSet("2d6", "test")
+    val d = new DiceSet("dS", "test")
     it("should keep name") {
       d.name should be("test")
     }

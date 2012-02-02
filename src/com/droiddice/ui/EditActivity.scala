@@ -173,7 +173,7 @@ class EditFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	val GALLERY_PAGES = Array[GalleryPage](
 		new GalleryPage("Standard", Array("d4", "d6", "d8", "d10", "d12", "d20")),
 		new GalleryPage("Savage Worlds", Array("s4", "s6", "s8", "s10", "s20")),
-		new GalleryPage("Other", Array("dF", "+1", "-1")))
+		new GalleryPage("Other", Array("dF", "+1", "-1", "dS")))
       
 	var currentDiceSet: ObservableDiceSet = _
 	var duplicateDiceSet: SavedDiceSet = _

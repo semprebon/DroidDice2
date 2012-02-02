@@ -94,7 +94,7 @@ class DiceSet(var dice: RandomAccessSeq[Die], var strategy: Strategy, newName: S
 class DiceSetHelper {}
 
 object DiceSetHelper {
-	val diePattern = Pattern.compile("([ds+])?(-?\\d+|F)")
+	val diePattern = Pattern.compile("([ds+])?(-?\\d+|F|S)")
     val leadingNumber = Pattern.compile("""^(\d*)(.*)$""")
     
     def split(spec: String, regex: Pattern): Tuple2[String,String] = {
@@ -106,6 +106,7 @@ object DiceSetHelper {
 	    try {
 		    val (t, size) = split(spec, diePattern)
 			if (t == "d" && size == "F") new FudgeDie
+			else if (t == "d" && size == "S") new SignDie()
 			else if (t == "s") new SavageDie(size.toInt)
 			else if (t == "d") new SimpleDie(size.toInt)
 			else new AdjustmentDie(size.toInt)
@@ -128,7 +129,7 @@ object DiceSetHelper {
     def join(seq: Seq[String], sep: String) = seq.reduceLeft((a:String,b:String) => a + sep + b)
     
     private def seperateStrategy(s: String): ((String, String), String) = {
-        val matcher = Pattern.compile("(max)\\(([\\w+-]+)(?:,(\\d+))?\\)").matcher(s)
+        val matcher = Pattern.compile("(max|count)\\(([\\w+-]+)(?:,([>=<]?\\d+))?\\)").matcher(s)
         if (matcher.find()) {
         	val strategy = matcher.group(1)
         	val args = matcher.group(3)
@@ -158,6 +159,7 @@ object DiceSetHelper {
 	    strategy match {
 	        case "max" => new MaxStrategy(args)
 	        case "add" => new AddStrategy(args)
+	        case "count" => new CountStrategy(args)
 	        case _ => throw new InvalidSpecificationException(
 	                	"Invalid strategy \"" + strategy + "\" in \"" + s + "\".")
 	    }
@@ -208,5 +210,23 @@ class MaxStrategy(args: String) extends Strategy("max", args) {
     
     def results(values: RandomAccessSeq[Int]) : RandomAccessSeq[Int] = {
     	values.sorted.reverse.take(count)
+    }
+}
+
+class CountStrategy(args: String) extends Strategy("count", args) {
+	System.out.println("count args=" + args)
+    val matcher = Pattern.compile("([><=])(\\d+)").matcher(args)
+    if (!matcher.matches()) throw new InvalidSpecificationException("Invalid count condition \"" + args + "\"")
+
+	def op(value: Int): Boolean = matcher.group(1) match {
+        case "<" => value < targetNumber
+        case "=" => value == targetNumber
+        case ">" => value > targetNumber
+        case _ => false
+    }
+    val targetNumber = matcher.group(2).toInt
+    
+    def results(values: RandomAccessSeq[Int]) : RandomAccessSeq[Int] = {
+    	Array(values.filter((x) => op(x)).size)
     }
 }
