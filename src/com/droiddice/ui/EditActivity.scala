@@ -150,7 +150,7 @@ class EditActivity extends FragmentActivity {
   		    	specificationEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
   		    		override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
   		    		    try {
-  		    		    	val diceSet = new SavedDiceSet(specificationEdit.getText().toString(), null.asInstanceOf[Int])
+  		    		    	val diceSet = new SavedDiceSet(specificationEdit.getText().toString(), fragment.currentDiceSet.id)
 			    		    diceSet.customName = fragment.currentDiceSet.customName
 			    			fragment.currentDiceSet = new ObservableDiceSet(diceSet)
 			    		    fragment.createCurrentSelection()

@@ -122,7 +122,7 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	}
 	
 	def updateResult() {
-		resultTextView.setText(currentDiceSet.display)
+		resultTextView.setText(currentDiceSet.display.replace(" ", "    "))
     	val layout = getActivity().findViewById(R.id.dice_layout)
     	val dice: Array[Die] = currentDiceSet.dice.toArray
     	val adapter = new DiceViewAdapter(getActivity().getApplication(), dice)

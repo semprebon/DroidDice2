@@ -27,7 +27,7 @@ class DiceSet(var dice: RandomAccessSeq[Die], var strategy: Strategy, newName: S
 	    else strategy.results(values)
 	}
 
-    def display = if (dice.isEmpty) "" else results.toString
+    def display = if (dice.isEmpty) "" else results.map(_.toString()).reduceLeft(_ + " " + _)
 
     def name = if (customName != null) customName else spec
     
@@ -194,7 +194,7 @@ class InvalidSpecificationException(message: String) extends Exception(message)
 
 abstract class Strategy(val name: String, argsStr: String) {
     def results(values: RandomAccessSeq[Int]) : RandomAccessSeq[Int]
-    def argsAsString = if (argsStr == null) "" else "," + argsStr
+    def argsAsString = if (argsStr != null) "," + argsStr else ""
 }
 
 class AddStrategy(args: String) extends Strategy("add", null) {

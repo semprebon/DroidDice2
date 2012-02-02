@@ -61,5 +61,9 @@ class MaxDiceSetSpec extends Spec with ShouldMatchers {
         d.results.apply(0) should be(5)
         d.results.apply(1) should be(2)
     }
+    it("should have display of max values seperated by spaces") {
+        d.valuesString = "1,5,2"
+        d.display should be("5 2")
+    }
   }
 }
