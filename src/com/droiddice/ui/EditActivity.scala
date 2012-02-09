@@ -170,14 +170,16 @@ class EditActivity extends FragmentActivity {
 
 class EditFragment extends Fragment with FragmentViewFinder with TitleBarHandler {
     
-	val GALLERY_PAGES = Array[GalleryPage](
-		new GalleryPage("Standard", Array("d4", "d6", "d8", "d10", "d12", "d20")),
-		new GalleryPage("Savage Worlds", Array("s4", "s6", "s8", "s10", "s20")),
-		new GalleryPage("Other", Array("dF", "+1", "-1", "dS")))
-      
+	val DICE_PAGES = Map(
+	        "Standard" -> Array("d4", "d6", "d8", "d10", "d12", "d20"),
+	        "Exploding" -> Array("s4", "s6", "s8", "s10", "s12", "s20"),
+	        "Other" -> Array("dF", "+1", "-1", "dS"))
+    val DICE_SPECS = Array("d4", "d6", "d8", "d10", "d12", "d20", "s4", "s6", "s8", "s10", "s20", "dF", "+1", "-1", "dS")
+	val DICE = DICE_SPECS.map(DiceSetHelper.dieFactory(_).apply(0))
+
 	var currentDiceSet: ObservableDiceSet = _
 	var duplicateDiceSet: SavedDiceSet = _
- 
+	
 	private val TAG = "EditFragment"
  
 	def showBundleKeys(desc: String, bundle: Bundle) {
@@ -294,67 +296,48 @@ class EditFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 		})
 	}
 
+	def addDiceToPage(galleryView: ViewGroup, name: String, dice: Array[String]) {
+		val itemViewSize = getActivity().getResources().getDimension(R.dimen.die_view_size).toInt
+	    val dicePerRow = 3
+	    val rowsPerPage = 2
+	    for (row <- 0 until rowsPerPage) {
+	    	val rowView = galleryView.getChildAt(row).asInstanceOf[ViewGroup]
+	    	for (col <- 0 until dicePerRow) {
+	    	    val dieIndex = (row * dicePerRow) + col
+	    	    val view: View = if (dieIndex < dice.length) {
+	    	    		val dieView = new DieView(getActivity())
+	    	    		dieView.die = DiceSetHelper.dieFactory(dice(dieIndex))(0)
+	    	    		dieView.preferredSize = itemViewSize
+	    	    		Log.d(TAG, "adding die to row:" + dieView.die)
+	    	    		dieView
+	    	    	} else {
+	    	    	    new ImageView(getActivity())
+	    	    	}
+	    	    rowView.addView(view)
+	    	}
+	    }
+	}
+	
 	/**
 	 * Create the gallery
 	 */
 	def createDiceGallery() {
-		Log.d(TAG, "Setting up galallery")
-		val galleryView = findById[Gallery](R.id.dice_gallery)
-		val adapter = new GalleryPageViewAdapter(getActivity(), GALLERY_PAGES, galleryView)
-		//galleryView.setSpacing(getResources().getDimension(R.dimen.gallery_spacing).toInt)
-		galleryView.setAdapter(adapter)
-		galleryView.setSelection(1)
+		val itemViewSize = getActivity().getResources().getDimension(R.dimen.die_view_size).toInt
+ 
+		Log.d(TAG, "Setting up gallery for " + DICE.map(_.toString()).reduceLeft(_ + "," + _))
+		val galleryView = findById[ViewGroup](R.id.dice_gallery)
+		val row = galleryView.getChildAt(0).asInstanceOf[ViewGroup]
+		DICE_PAGES.foreach((t) => { addDiceToPage(galleryView, t._1, t._2)})
+//		DICE.foreach(die => {
+//		    val view = new DieView(getActivity())
+//		    view.die = die
+//		    view.preferredSize = itemViewSize
+//		    Log.d(TAG, "adding die to row:" + die)
+//		
+//		    row.addView(view)
+//		})
+	    Log.d(TAG, "relaying view:")
+		galleryView.requestLayout()
 	}
 
-	/**
-	 * This class holds all the information required to generate a gallery page
-	 */
-	class GalleryPage(val name: String, dieSpecs: Array[String]) {
-		val dice = dieSpecs.map(DiceSetHelper.singleDieFactory(_))
-	}
-  
-	/**
-	 * This adapter is responsible for building each page in the dice gallery 
-	 */
-	class GalleryPageViewAdapter(activity: Activity, pages: Array[GalleryPage], gallery: Gallery) 
-			extends ArrayAdapter[GalleryPage](activity, 0,  pages) {
-		 
-		var itemOnTouchListener: OnTouchListener = _
-	    
-	    /**
-	     * Create the grid of dice to select from
-	     */
-	    def createDiceGrid(pageView: View, page: GalleryPage) {
-	    	val gridView = pageView.findViewById(R.id.dice_gallery_page_grid).asInstanceOf[GridView]
-	    	gridView.setAdapter(new DiceViewAdapter(activity, page.dice))
-	    	gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	    		override def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
-	    			val die = view.asInstanceOf[DieView].die
-	    			Log.d(TAG, "adding " + die.spec + " to " + currentDiceSet)
-	    			currentDiceSet.add(die.spec)
-	    			Log.d(TAG, "now have" + currentDiceSet)
-	    			createCurrentSelection()
-	    		}
-	    	})
-	    }
-	    
-		def pageViewWidth(parent: View) = 
-		    4*getResources().getDimension(R.dimen.die_view_size).toInt
-
-		/**
-	     * Assemble the view for the gallery page
-	     */
-		override def getView(position: Int, convertView : View, parent: ViewGroup): View = {
-			val pageView = if (convertView == null || !convertView.isInstanceOf[LinearLayout]) 
-					activity.getLayoutInflater().inflate(R.layout.dice_gallery_page, gallery, false) 
-				else 
-					convertView.asInstanceOf[LinearLayout]
-			val page = getItem(position)
-			val nameView = pageView.findViewById(R.id.dice_gallery_page_name).asInstanceOf[TextView]
-			nameView.setText(page.name)
-			createDiceGrid(pageView, page)
-			return pageView
-		}
-	}
-	    
 }

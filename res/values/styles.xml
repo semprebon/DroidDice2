@@ -107,5 +107,6 @@
         <item name="android:scrollbarAlwaysDrawHorizontalTrack">true</item>
         <item name="android:verticalSpacing">2dp</item>
     </style>
+    <dimen name="gallery_height">144dp</dimen>
 
 </resources>

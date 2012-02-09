@@ -12,23 +12,42 @@
         android:layout_height="wrap_content"
         layout="@layout/window_title" />
 
-
     <GridView
         android:id="@+id/selected_dice"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="293dp"
         android:layout_gravity="center"
         android:layout_margin="5dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:numColumns="4"/>
+        android:gravity="center" />
 
-    <com.droiddice.ui.GridViewGallery
-        android:id="@+id/dice_gallery"
+    <HorizontalScrollView
+        android:id="@+id/dice_gallery_scroll"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:scrollbarFadeDuration="0"
-        android:scrollbars="horizontal" />
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/db_bg_red"
+        android:minHeight="@dimen/gallery_height" >
+
+        <TableLayout
+            android:id="@+id/dice_gallery"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/db_bg_green" >
+			<TableRow>
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/d10" />			    
+			</TableRow>
+			<TableRow>
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/d10" />			    
+			</TableRow>
+			</TableLayout>
+    </HorizontalScrollView>
 
 </LinearLayout>
