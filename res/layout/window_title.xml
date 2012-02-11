@@ -4,7 +4,7 @@
     android:id="@+id/dice_set_name_title_bar"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android1:background="@drawable/semitransparent_gradient"
+    android:background="@drawable/semitransparent_gradient"
     android:orientation="horizontal" >
 
     <LinearLayout

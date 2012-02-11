@@ -298,8 +298,9 @@ class EditFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 
 	def addDiceToPage(galleryView: ViewGroup, name: String, dice: Array[String]) {
 		val itemViewSize = getActivity().getResources().getDimension(R.dimen.die_view_size).toInt
-	    val dicePerRow = 3
-	    val rowsPerPage = 2
+	    val galleryHeight = getActivity().getResources().getDimension(R.dimen.gallery_height).toInt
+	    val rowsPerPage = galleryHeight / itemViewSize
+	    val dicePerRow = 6 / rowsPerPage
 	    for (row <- 0 until rowsPerPage) {
 	    	val rowView = galleryView.getChildAt(row).asInstanceOf[ViewGroup]
 	    	for (col <- 0 until dicePerRow) {
@@ -309,6 +310,13 @@ class EditFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	    	    		dieView.die = DiceSetHelper.dieFactory(dice(dieIndex))(0)
 	    	    		dieView.preferredSize = itemViewSize
 	    	    		Log.d(TAG, "adding die to row:" + dieView.die)
+	    	    		dieView.setOnClickListener(new View.OnClickListener() {
+	    	    		    def onClick(view: View) {
+	    	    		        val die = view.asInstanceOf[DieView].die
+	    	    		        currentDiceSet.add(die.spec)
+	    	    		        createCurrentSelection()
+	    	    		    }
+	    	    		})
 	    	    		dieView
 	    	    	} else {
 	    	    	    new ImageView(getActivity())

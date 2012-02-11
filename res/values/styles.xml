@@ -3,7 +3,7 @@
 	<!-- Dimensions -->
 
     <dimen name="die_padding">2dp</dimen>
-    <dimen name="die_view_size">72dp</dimen>
+    <dimen name="die_view_size">64dp</dimen>
     <dimen name="gallery_margin">36dp</dimen>
     <dimen name="gallery_spacing">3dp</dimen>
     <dimen name="gallery_width">260dp</dimen>
@@ -101,12 +101,15 @@
         <item name="android:textColor">#FF0</item>
     </style>
 
-    <style name="gallery_grid" parent="android:Widget.GridView">
+    <style name="gallery_grid" parent="@android:style/Widget.GridView">
         <item name="android:horizontalSpacing">2dp</item>
         <item name="android:numColumns">4</item>
         <item name="android:scrollbarAlwaysDrawHorizontalTrack">true</item>
         <item name="android:verticalSpacing">2dp</item>
     </style>
-    <dimen name="gallery_height">144dp</dimen>
+    <dimen name="gallery_height">130dp</dimen>
+    <style name="dice_gallery">
+        <item name="android:layout_height">@dimen/gallery_height</item>
+    </style>
 
 </resources>
