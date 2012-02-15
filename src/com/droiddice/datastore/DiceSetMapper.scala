@@ -47,4 +47,8 @@ class SavedDiceSet(spec: String, val id: Long) extends DiceSet(spec) with Serial
     override def toString() = id + ":" + super.toString()
     
     def isSaved = id != SavedDiceSet.UNSAVED_ID
+    
+    def withIdentity(id: Long) = {
+        new SavedDiceSet(this, id)
+    }
 }

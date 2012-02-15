@@ -30,7 +30,7 @@ class DiceSetDataStore(activity: Activity) {
     /**
      * Creates a new diceset. Executes after if successful, otherwise displays an error message
      */
-	def create(diceSet: SavedDiceSet, after: (Throwable) => Unit) {
+	def create(diceSet: SavedDiceSet, after: (Throwable, Long) => Unit) {
    	    val process = new AsyncStoreProcess(after) {
 	        override def process(diceSet: SavedDiceSet): Long = {
 	        	val values = DiceSetMapper.diceSetToValues(diceSet)
@@ -44,7 +44,7 @@ class DiceSetDataStore(activity: Activity) {
    	    process.execute(diceSet)
 	}
 	
-	def update(diceSet: SavedDiceSet, after: (Throwable) => Unit) {
+	def update(diceSet: SavedDiceSet, after: (Throwable, Long) => Unit) {
    	    val process = new AsyncStoreProcess(after) {
 	        override def process(diceSet: SavedDiceSet): Long = {
 	        	if (!diceSet.isNamed) deleteAnonymousDuplicate(diceSet.spec)
@@ -59,7 +59,7 @@ class DiceSetDataStore(activity: Activity) {
    	    process.execute(diceSet)
 	}
 	
-	def rename(diceSet: SavedDiceSet, newName: String, after: (Throwable) => Unit) {
+	def rename(diceSet: SavedDiceSet, newName: String, after: (Throwable, Long) => Unit) {
 	    val process = new AsyncStoreProcess(after) {
 	        override def doInBackground(items: Object*) : Long = {
 	            val diceSet = items(0).asInstanceOf[SavedDiceSet]
@@ -77,7 +77,7 @@ class DiceSetDataStore(activity: Activity) {
 	    process.execute(diceSet, newName)
 	}
 
-	def delete(diceSet: SavedDiceSet, after: (Throwable) => Unit) {
+	def delete(diceSet: SavedDiceSet, after: (Throwable, Long) => Unit) {
    	    val process = new AsyncStoreProcess(after) {
 	        override def process(diceSet: SavedDiceSet): Long = {
 	        	val id = diceSet.id
@@ -170,7 +170,7 @@ class DiceSetDataStore(activity: Activity) {
      * This should really by DiceSet, not Object; but due to bug, scala sometimes has problems 
      * passing varargs; but works with Object... 
      */ 
-	class AsyncStoreProcess(after: (Throwable) => Unit) extends AsyncTask[Object, Void, Long] {
+	class AsyncStoreProcess(after: (Throwable, Long) => Unit) extends AsyncTask[Object, Void, Long] {
 	    var dialog: Dialog = _
 	    var exception: Throwable = _
 	    
@@ -196,7 +196,7 @@ class DiceSetDataStore(activity: Activity) {
 		override protected def onPostExecute(result: Long) {
 		    Log.d(TAG, "onPostExecute")
 			dialog.dismiss()
-			after(exception)
+			after(exception, result)
 		}
 	}
 

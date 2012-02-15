@@ -74,18 +74,13 @@ class PickFragment extends ListFragment with FragmentViewFinder with LoaderManag
 		val info = item.getMenuInfo().asInstanceOf[AdapterContextMenuInfo]
 		val diceSet = info.targetView.getTag().asInstanceOf[SavedDiceSet]
 		item.getItemId() match {
-			case R.id.edit_dice_set => { 
-			    	startActivity(
-			            EditActivity.intent(getActivity(), null))
-			        true 
-			    }
 			case R.id.delete_dice_set => { deleteDiceSet(diceSet); true }
 			case _ => super.onContextItemSelected(item)
 		}
 	}
 
 	def deleteDiceSet(diceSet: SavedDiceSet) {
-	    dataStore.delete(diceSet, (error: Throwable) => {
+	    dataStore.delete(diceSet, (error: Throwable, id: Long) => {
 	        val run = new Runnable() { override def run { updateDisplay() } }
 	        Log.d(TAG, "running runable")
 	        getActivity().runOnUiThread(run) 

@@ -111,7 +111,14 @@ class DieView(context: Context, attrs: AttributeSet) extends View(context, attrs
 	override def onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 		setMeasuredDimension(measureWidth(widthMeasureSpec), measureHeight(heightMeasureSpec))
 	}
-
+	
+	override def onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect) {
+		if (gainFocus) {
+			this.setBackgroundColor(context.getResources().getColor(R.color.focus_color));
+		} else {
+			this.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+		}
+	}
 }
 
 // static class
