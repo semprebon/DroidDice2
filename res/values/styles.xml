@@ -3,7 +3,7 @@
 	<!-- Dimensions -->
 
     <dimen name="die_padding">2dp</dimen>
-    <dimen name="die_view_size">64dp</dimen>
+    <dimen name="die_view_size">50dp</dimen>
     <dimen name="gallery_margin">36dp</dimen>
     <dimen name="gallery_spacing">3dp</dimen>
     <dimen name="gallery_width">260dp</dimen>

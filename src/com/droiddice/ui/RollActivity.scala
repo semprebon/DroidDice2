@@ -254,10 +254,18 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	}
   
 	private def installRollActionHandler() {
-		findById[View](R.id.dice_result_text).setOnClickListener(new View.OnClickListener() {
+	    val result = findById[View](R.id.dice_result_text)
+		result.setOnClickListener(new View.OnClickListener() {
 			override def onClick(view: View)  {
 				activity.diceSet.roll()
 				updateResult()
+			}
+		})
+		result.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+		    val unfocusColor = getResources().getColor(R.color.transparent)
+		    val focusColor = getResources().getColor(R.color.focus_color)
+			override def onFocusChange(view: View, hasFocus: Boolean)  {
+				view.setBackgroundColor(if (hasFocus) focusColor else unfocusColor)
 			}
 		})
 	}
@@ -307,7 +315,7 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 	def addDiceToPage(galleryView: ViewGroup, name: String, dice: Array[String]) {
 		val itemViewSize = getActivity().getResources().getDimension(R.dimen.die_view_size).toInt
 	    val galleryHeight = getActivity().getResources().getDimension(R.dimen.gallery_height).toInt
-	    val rowsPerPage = galleryHeight / itemViewSize
+	    val rowsPerPage = Math.min(galleryHeight / itemViewSize, 1)
 	    val dicePerRow = 6 / rowsPerPage
 	    for (row <- 0 until rowsPerPage) {
 	    	val rowView = galleryView.getChildAt(row).asInstanceOf[ViewGroup]
