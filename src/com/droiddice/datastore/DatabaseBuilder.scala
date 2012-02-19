@@ -39,7 +39,7 @@ class DatabaseBuilder(context: Context)
             }
         }
     }
-    def onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+    override def onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         for (version <- oldVersion to (newVersion+1) by -1) {
             val migration = MIGRATIONS(version)
             if (migration != None) {

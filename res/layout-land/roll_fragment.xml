@@ -29,12 +29,12 @@
             android:numColumns="4" >
 
         </GridView>
-
+
         <TextView
             android:id="@+id/dice_result_text"
             style="@style/result"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="3"
             android:focusable="true"
             android:gravity="center"
@@ -79,27 +79,26 @@
         android:id="@+id/action_buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-
-
+
         <ImageButton
             android:id="@+id/dice_set_save_button"
             style="@style/recent_pick_button"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:src="@drawable/ic_save" />
-
+
         <ImageButton
             android:id="@+id/dice_set_new_button"
             style="@style/recent_pick_button"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:src="@drawable/ic_add" />
-
+
         <ImageButton
             android:id="@+id/dice_sets_selection_button"
             style="@style/recent_pick_button"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:src="@drawable/ic_more" />
 
     </LinearLayout>

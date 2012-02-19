@@ -25,6 +25,9 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.view.KeyEvent
 import com.droiddice.datastore.DiceSetDataStore
+import com.google.ads.AdView
+import com.google.ads.AdSize
+import com.google.ads.AdRequest
 
 class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 
@@ -162,6 +165,7 @@ class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 	        }
 	    }
 	}
+	
 }
 
 class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler {
@@ -199,6 +203,7 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 		createCurrentSelection()
 		updateResult()
 		createDiceGallery()
+		//addAdView()
 	}
 	
 
@@ -360,6 +365,17 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 		galleryView.requestLayout()
 	}
 
-
+	val EQSYSTEMS_AD_UNIT_ID = "testing"
+	
+	def addAdView() = {
+		val adView = new AdView(getActivity(), AdSize.BANNER, EQSYSTEMS_AD_UNIT_ID)
+		val layout = activity.findById[LinearLayout](R.id.roll_activity_layout)
+		layout.addView(adView)
+		//val adRequest = new AdRequest()
+		val adRequest = new AdRequest()
+		adRequest.addTestDevice(AdRequest.TEST_EMULATOR)         // Emulator
+		//adRequest.addTestDevice("TEST_DEVICE_ID");
+		adView.loadAd(adRequest)
+	}
 	
 }
