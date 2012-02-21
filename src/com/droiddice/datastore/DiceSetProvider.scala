@@ -14,9 +14,9 @@ import android.content.ContentProvider
 import android.net.Uri
 import android.database.sqlite.SQLiteQueryBuilder
 import android.content.UriMatcher
+import android.app.Activity
 
 object DiceSetProvider {
-    val CONTENT_URI = Uri.parse("content://com.droiddice.dicesetprovider");
     val AUTHORITY = "com.droiddice.dicesetprovider"
     
     val _ID = "_id"
@@ -34,8 +34,19 @@ object DiceSetProvider {
 	URI_MATCHER.addURI(AUTHORITY, "diceset/*", DICE_SET_ID)
 	URI_MATCHER.addURI(AUTHORITY, "dicesets", DICE_SETS)
 
-	def uriFor(id: Long) = Uri.withAppendedPath(DiceSetProvider.CONTENT_URI, "diceset/" + id.toString())
-    def uriFor(diceSet: SavedDiceSet): Uri = uriFor(diceSet.id)
+	def variantForContext(context: Context): String = {
+        context.getPackageName() match {
+            case "com.droiddice.lite" => return "lite"
+            case _ => return "pro"
+        }
+    }
+    
+	def contentUri(context: Context) = {
+        Uri.parse("content://com.droiddice." + variantForContext(context) + ".dicesetprovider")
+    }
+    
+	def uriFor(context: Context, id: Long) = Uri.withAppendedPath(contentUri(context), "diceset/" + id.toString())
+    def uriFor(context: Context, diceSet: SavedDiceSet): Uri = uriFor(context, diceSet.id)
 }
 
 class DiceSetProvider extends ContentProvider {
@@ -89,14 +100,14 @@ class DiceSetProvider extends ContentProvider {
 	    if (values.getAsString(NAME) == null) {
 	        val diceSet = findAnonymous(values.getAsString(SPEC))
 	        if (diceSet != null) {
-	            val uri = DiceSetProvider.uriFor(diceSet)
+	            val uri = DiceSetProvider.uriFor(getContext(), diceSet)
 	            update(uri, values, null, null)
 	            return uri
 	        }
 	    }
         val id = db.insertOrThrow(DICE_SET_TABLE, null, values)
         getContext().getContentResolver().notifyChange(uri, null)
-        return DiceSetProvider.uriFor(id)
+        return DiceSetProvider.uriFor(getContext(), id)
     }
 
     def addIdToSelection(selection: String, args: Array[String], uri: Uri): 

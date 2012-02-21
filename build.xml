@@ -27,7 +27,8 @@
 
          -->
     <property file="ant.properties" />
-
+	<property name="variant.package.base" value="com.droiddice" />
+	
     <!-- The project.properties file is created and updated by the 'android'
          tool, as well as ADT.
 
@@ -60,6 +61,7 @@
     <target name="-post-compile">
     </target>
 -->
+    <target name="-pre-build" depends="-set-variant,-fix-manifest-for-variants" />
 
 	<!-- Converts this project's .class files into .dex files -->
 	<!--target name="-post-compile" depends="-post-compile-scala" /-->
@@ -87,6 +89,29 @@
     <import file="${sdk.dir}/tools/ant/build.xml" />
 	<import file="build-scala.xml" />
 
+	<target name="pro" description="Create pro variant">
+		<property name="variant" value="pro" />
+	</target>
+	
+	<target name="-set-variant">
+		<property name="variant" value="lite" />
+		<condition property="variant.other" value="pro" else="lite">
+			<equals arg1="${variant}" arg2="lite" />
+		</condition>
+		<property name="variant.package" value="${variant.package.base}.${variant}" />
+		<property name="variant.package.other" value="${variant.package.base}.${variant.other}" />
+	</target>
+	
+	<!-- Fix manifest for variants -->
+	<target name="-fix-manifest-for-variants">
+		<echo message="Fixing manifest for ${variant}" />
+		<replace file="AndroidManifest.xml" token="${variant.package.other}" value="${variant.package}" />
+		<replace file="AndroidManifest.xml" token="-- if ${variant.other} start --" value="if ${variant.other} start -?" />	
+		<replace file="AndroidManifest.xml" token="-- if ${variant.other} end --" value="-? if ${variant.other} end --" />	
+		<replace file="AndroidManifest.xml" token="-- if ${variant} start -?" value="-- if ${variant} start --" />	
+		<replace file="AndroidManifest.xml" token="-? if ${variant} end --" value="-- if ${variant} end -->" />	
+	</target>
+	
 	<!-- Custom targets for running local (i.e., fast) model test
 	-->
     <target name="-compile-scala-test" depends="-compile-scala"
@@ -143,6 +168,8 @@
         </do-only-if-manifest-hasCode>
     </target>
 
+	<target name="build-library" depends="-post-compile-scala" description="Generates library jar file"/>
+	
 	<target name="test-models" depends="-compile-scala-test">
 		<junit printsummary="true">
             <classpath>
@@ -160,4 +187,26 @@
 		</junit>
 	</target>
 
+	<!-- This should replace the standard task -->
+    <target name="-package-resources" depends="-crunch,-fix-manifest-for-variants">
+        <!-- only package resources if *not* a library project -->
+        <do-only-if-not-library elseText="Library project: do not package resources..." >
+   			<exec executable="${aapt}" failonerror="true">
+   		      	<arg value="package" />
+   				<arg value="--version-code"/> <arg value="${version.code}" />
+   				<arg value="--version-name"/> <arg value="${version.name}" />
+   				<arg value="-M" /> <arg path="AndroidManifest.xml" />
+   				<arg value="-A" /> <arg path="assets" />
+   				<arg value="-f" />
+   				<arg value="-v" />
+   				<arg value="-I" /> <arg path="${android.jar}" />
+   				<arg value="-F" /> <arg path="${out.absolute.dir}/${resource.package.file.name}" />
+   				<arg value="-m" />
+   				<arg value="-J" /> <arg path="${out.absolute.dir}" />
+   				<arg value="-S" /> <arg path="${out.res.absolute.dir}" />
+   				<arg value="-S" /> <arg path="${resource.absolute.dir}" />
+   		      	<arg value="--rename-manifest-package" /> <arg value="${variant.package}" />
+   		  	</exec>
+        </do-only-if-not-library>
+    </target>
 </project>

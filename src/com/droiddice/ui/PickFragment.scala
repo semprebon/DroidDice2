@@ -92,7 +92,7 @@ class PickFragment extends ListFragment with FragmentViewFinder with LoaderManag
      */
     def onCreateLoader(id: Int, args: Bundle): Loader[Cursor] = {
         Log.d(TAG, "onCreateLoader")
-        val baseUri = DiceSetProvider.CONTENT_URI
+        val baseUri = DiceSetProvider.contentUri(activity)
         return new CursorLoader(getActivity(), baseUri,
                 DiceSetProvider.PUBLIC_COLUMNS, null, null,
                 DiceSetProvider.NAME + " ASC")

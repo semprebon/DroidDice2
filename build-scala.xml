@@ -135,11 +135,12 @@
                     <path location="${out.classes.absolute.dir}" />
                     <fileset dir="${jar.libs.dir}" includes="*.jar" />
                     <path refid="project.libraries.jars" />
-                    <path location="${scala-library.jar}(!META-INF/MANIFEST.MF,!library.properties)" />
+                    <!--path location="${scala-library.jar}(!META-INF/MANIFEST.MF,!library.properties)" /-->
+                    <!--path location="${scala-library.jar}" /-->
                 </pathconvert>
             </else></if>
-            <split-path property="injars" prefix="-injars" path="${project.injars}" />
-            <split-path property="outjars" prefix="-outjars" path="${shrinked.jar}" />
+            <split-path property="injars" prefix='-injars "' suffix='"' path="${project.injars}" />
+            <split-path property="outjars" prefix='-outjars "' suffix='"' path="${shrinked.jar}" />
             <!-- set the android classpath object into a single property. -->
             <if condition="${uses.ramdisk}"><then>
                 <pathconvert property="project.libraryjars">
@@ -151,7 +152,7 @@
                     <path refid="android.target.classpath" />
                 </pathconvert>
             </else></if>
-            <split-path property="libraryjars" prefix="-libraryjars" path="${project.libraryjars}" />
+            <split-path property="libraryjars" prefix='-libraryjars "' suffix='"' path="${project.libraryjars}" />
         </else></if>
         <!-- Name of the application package extracted from manifest file -->
         <xpath input="AndroidManifest.xml" expression="/manifest/@package"
@@ -161,6 +162,7 @@
                 <replacetokens>
                     <token key="HEADER" value="${header}" />
                     <token key="INJARS" value="${injars}" />
+                	<token key="SCALALIB" value="${scala-library.jar}(!META-INF/MANIFEST.MF,!library.properties)" />
                     <token key="OUTJARS" value="${outjars}" />
                     <token key="LIBRARYJARS" value="${libraryjars}" />
                     <token key="PACKAGENAME" value="${manifest.package}" />
@@ -191,15 +193,16 @@
     <!-- split 'path' into several lines starting with 'prefix' and save result in 'property' -->
     <macrodef name="split-path">
         <attribute name="property" />
-        <attribute name="prefix" />
-        <attribute name="path" />
+        <attribute name="prefix" default="" />
+    	<attribute name="suffix" default="" />
+    	<attribute name="path" />
         <sequential>
             <tempfile property="temp.file" destdir="${out.dir}" deleteonexit="true" />
             <echo message="@{path}" file="${temp.file}" />
             <loadfile srcfile="${temp.file}" property="@{property}.list">
                 <filterchain>
                     <replacestring from="${path.separator}" to="${line.separator}"/>
-                    <replaceregex pattern="(.*)" replace="@{prefix} \1" />
+                    <replaceregex pattern="(.*)" replace="@{prefix}\1@{suffix}" />
                 </filterchain>
             </loadfile>
             <property name="@{property}" value="${@{property}.list}" />

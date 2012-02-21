@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:id="@+id/roll_activity_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/background"
     android:orientation="vertical" >
+
+		<com.google.ads.AdView
+		    android:id="@+id/adView"
+		    android:layout_width="320px"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center_horizontal"
+		    ads:adSize="BANNER"
+		    ads:adUnitId="a14f4034cc8ec37"
+		    ads:loadAdOnCreate="true"
+		    ads:testDevices="TEST_EMULATOR, TEST_DEVICE_ID" />
 
     <include
         android:id="@+id/title_bar"

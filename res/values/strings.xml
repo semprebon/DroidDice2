@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DroidDice 2</string>
+    <string name="app_name_lite">DroidDice Lite</string>
+    <string name="app_name_pro">DroidDice Pro</string>
     <string name="roll">Roll</string>
     <string name="change">Edit</string>
     <string name="edit_button_description">edit</string>
@@ -15,5 +17,7 @@
     <string name="pick_button_text">&#8230;</string>
     <string name="delete">Delete</string>
     <string name="empty_pick_list">"No dice  sets saved. "</string>
+    <string name="com.droiddice.lite.name">DroidDice Lite</string>
+    <string name="com.droiddice.pro.name">DroidDice Pro</string>
     
 </resources>

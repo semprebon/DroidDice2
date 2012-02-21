@@ -23,7 +23,7 @@ import android.content.DialogInterface
 class DiceSetDataStore(activity: Activity) {
 
 	val contentResolver = activity.getContentResolver()
-	val uri = Uri.withAppendedPath(DiceSetProvider.CONTENT_URI, "dicesets")
+	val uri = Uri.withAppendedPath(DiceSetProvider.contentUri(activity), "dicesets")
 		
     private val TAG = "DiceSetDataStore"
         
@@ -36,7 +36,8 @@ class DiceSetDataStore(activity: Activity) {
 	        	val values = DiceSetMapper.diceSetToValues(diceSet)
 
 	        	Log.d(TAG, "Adding new DiceSet " + diceSet)
-	        	val itemUri = contentResolver.insert(DiceSetProvider.CONTENT_URI, values)
+	        	Log.d(TAG, "url for insert is " + DiceSetProvider.contentUri(activity))
+	        	val itemUri = contentResolver.insert(DiceSetProvider.contentUri(activity), values)
 	        	Log.d(TAG, "Added " + itemUri)
 	        	itemUri.getLastPathSegment().toLong
 	        }
@@ -51,7 +52,7 @@ class DiceSetDataStore(activity: Activity) {
 	        	val id = diceSet.id
         		val values = DiceSetMapper.diceSetToValues(diceSet)
         		Log.d(TAG, "Updating DiceSet " + diceSet)
-        		val itemUri = DiceSetProvider.uriFor(id)
+        		val itemUri = DiceSetProvider.uriFor(activity, id)
         		contentResolver.update(itemUri, values, null, null)
         		return id
 	        }
@@ -67,7 +68,7 @@ class DiceSetDataStore(activity: Activity) {
 	        	val id = diceSet.id
 	        	if (!diceSet.isNamed) deleteAnonymousDuplicate(diceSet.spec)
     			Log.d(TAG, "Renaming DiceSet " + id + " to " + newName)
-    			val itemUri = DiceSetProvider.uriFor(id)
+    			val itemUri = DiceSetProvider.uriFor(activity, id)
     			val values = new ContentValues()
     			values.put(DiceSetProvider.NAME, newName)
     			contentResolver.update(itemUri, values, null, null)
@@ -83,7 +84,7 @@ class DiceSetDataStore(activity: Activity) {
 	        	val id = diceSet.id
 	        	val values = DiceSetMapper.diceSetToValues(diceSet)
         		Log.d(TAG, "Deleting DiceSet " + id)
-        		val itemUri = DiceSetProvider.uriFor(id)
+        		val itemUri = DiceSetProvider.uriFor(activity, id)
         		contentResolver.delete(itemUri, null, null)
         		return id
 	        }
