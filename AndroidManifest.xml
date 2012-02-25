@@ -5,6 +5,7 @@
       android:versionName="1.1">
     <uses-sdk android:targetSdkVersion="14" android:minSdkVersion="7"/>
     <!-- if lite start -->
+    <meta-data android:value="a14f4034cc8ec37" android:name="ADMOB_PUBLISHER_ID" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- if lite end -->>
@@ -16,7 +17,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.EditActivity"></activity>
         <activity android:name=".ui.PickActivity"></activity>
         <provider android:name=".datastore.DiceSetProvider"
             android:authorities="com.droiddice.lite.dicesetprovider"/>

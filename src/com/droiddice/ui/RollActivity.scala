@@ -28,6 +28,8 @@ import com.droiddice.datastore.DiceSetDataStore
 import com.google.ads.AdView
 import com.google.ads.AdSize
 import com.google.ads.AdRequest
+import android.view.Window
+import android.content.res.Configuration
 
 class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 
@@ -41,7 +43,6 @@ class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 	lazy val rollFragment = findFragmentById[RollFragment](R.id.roll_fragment)
 	lazy val pickViewAlwaysOn = !(rollFragment.getView().getParent().isInstanceOf[ViewAnimator])
 	lazy val saveInteraction = new SaveInteraction(this)
-	
     lazy val dataStore = new DiceSetDataStore(this)
     
 	val TAG = "RollDiceActivity"
@@ -55,9 +56,17 @@ class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
 	    rollFragment.updateResult()
   	}
   	
+  	def variant = {
+  	    val name = this.getPackageName()
+  	    name.substring(name.lastIndexOf(".")+1)
+  	}
+  	
 	/** Called when the activity is first created. */
 	override def onCreate(savedInstanceState: Bundle) {
 		super.onCreate(savedInstanceState)
+		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+		    this.requestWindowFeature(Window.FEATURE_NO_TITLE)
+		}
 		setContentView(R.layout.roll_activity)
 		
         // Create the list fragment and add it as content for picklist.
@@ -203,6 +212,7 @@ class RollFragment extends Fragment with FragmentViewFinder with TitleBarHandler
 		createCurrentSelection()
 		updateResult()
 		createDiceGallery()
+		new AdSwitcher(this).configure(activity.variant)
 		//addAdView()
 	}
 	

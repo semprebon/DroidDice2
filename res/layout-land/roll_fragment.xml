@@ -1,44 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:id="@+id/roll_activity_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/background"
     android:orientation="vertical" >
 
-    <include
-        android:id="@+id/title_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/window_title" />
-
     <LinearLayout
         android:id="@+id/roll_area_layout"
         android:layout_width="fill_parent"
         android:layout_weight="1"
         android:layout_height="fill_parent">
-
-        <GridView
-            android:id="@+id/dice_layout"
-            style="@style/dice_grid"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:numColumns="4" >
-
-        </GridView>
-
-        <TextView
-            android:id="@+id/dice_result_text"
-            style="@style/result"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+
+        <LinearLayout
+            android:id="@+id/roll_dice_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="3"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="@string/dummy_result" />
+            android:orientation="vertical" >
+
+  		    <ViewAnimator
+  		        android:id="@+id/ad_area"
+  		        android:layout_width="wrap_content"
+  		        android:layout_height="wrap_content"
+  		        android:layout_gravity="center_horizontal" >
+		
+		        <ImageView
+		            android:id="@+id/upgrade_ad_view"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:src="@drawable/upgrade_ad" />
+		    	
+				<com.google.ads.AdView
+			    	android:id="@+id/ad_view"
+				    android:layout_width="wrap_content"
+			    	android:layout_height="wrap_content"
+				    android:layout_gravity="center_horizontal"
+			    	ads:adSize="BANNER"
+				    ads:adUnitId="a14f4034cc8ec37"
+			    	ads:loadAdOnCreate="true"
+				    ads:testDevices="TEST_EMULATOR, CF95DC53F383F9A836FD749F3EF439CD" />
+		    </ViewAnimator>
+	        <GridView
+	            android:id="@+id/dice_layout"
+	            style="@style/dice_grid"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_margin="5dp"
+	            android:layout_weight="2"
+	            android:gravity="center"
+	            android:numColumns="4" >
+	
+	        </GridView>
+	    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/roll_result_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/dice_set_name"
+                style="@style/title_display"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dummy_name" />
+
+            <TextView
+                android:id="@+id/dice_result_text"
+                style="@style/result"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/dummy_result" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
