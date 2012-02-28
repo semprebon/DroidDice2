@@ -94,7 +94,7 @@ class DiceSet(var dice: RandomAccessSeq[Die], var strategy: Strategy, newName: S
 class DiceSetHelper {}
 
 object DiceSetHelper {
-	val diePattern = Pattern.compile("([ds+])?(-?\\d+|F|S)")
+	val diePattern = Pattern.compile("([dsp+])?(-?\\d+|F|S)(?:\\:(\\d+))?")
     val leadingNumber = Pattern.compile("""^(\d*)(.*)$""")
     
     def split(spec: String, regex: Pattern): Tuple2[String,String] = {
@@ -102,12 +102,19 @@ object DiceSetHelper {
         if (matcher.matches) (matcher.group(1), matcher.group(2)) else ("","")
     }
     
+    def split3(spec: String, regex: Pattern): Tuple3[String,String,String] = {
+        val matcher = regex.matcher(spec)
+        if (matcher.matches) (matcher.group(1), matcher.group(2), matcher.group(3)) else ("","", "")
+    }
+    
 	def singleDieFactory(spec: String): Die = {
 	    try {
-		    val (t, size) = split(spec, diePattern)
+		    val (t, size, degree) = split3(spec, diePattern)
+		    System.err.println("extracted die parameters t=" + t + "; size=" + size + "; degree=" + degree)
 			if (t == "d" && size == "F") new FudgeDie
 			else if (t == "d" && size == "S") new SignDie()
 			else if (t == "s") new SavageDie(size.toInt)
+			else if (t == "p") new PowerDie(size.toInt, degree.toInt)
 			else if (t == "d") new SimpleDie(size.toInt)
 			else new AdjustmentDie(size.toInt)
 	    } catch {

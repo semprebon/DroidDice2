@@ -37,6 +37,12 @@ class AddDiceSetSpec extends Spec with ShouldMatchers {
 			assert(d.isInstanceOf[SignDie])
 		}
 	}
+	describe("a die created from 'p10:10' string") {
+		var d = DiceSetHelper.singleDieFactory("p10:10")
+		it("should create Power die") {
+			assert(d.isInstanceOf[PowerDie])
+		}
+	}
 
   describe("A dice set created from '2d4+d6-1' string") {
     val d = new DiceSet("2d4+d6-1")
