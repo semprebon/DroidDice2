@@ -11,12 +11,14 @@ import android.widget.Adapter
 import scala.reflect._
 import android.view.ViewGroup.LayoutParams
 import android.view.View.MeasureSpec
+import android.view.animation.AnimationUtils
 
 class DiceSetView(context: Context, attrs: AttributeSet) extends AdapterView[DiceViewAdapter](context, attrs) {
 	val TAG = "DieSetView"
 
 	val viewsPerRow = 5
-
+	val rollAnimation = AnimationUtils.loadAnimation(context, R.anim.shake)
+ 
 	def this(context: Context) = this(context, null) 
 
 	private var adapter: DiceViewAdapter = _
@@ -72,6 +74,14 @@ class DiceSetView(context: Context, attrs: AttributeSet) extends AdapterView[Dic
 	    positionItems()
 	}
 	
+	def animateRoll() {
+		rollAnimation.reset();
+		for (index <- 0 until getCount()) {
+		    val view = adapter.getView(index, null, this)
+		    view.startAnimation(rollAnimation)
+		}
+	}
+	
 	/**
 	 * Adds a view as a child view and takes care of measuring it	
 	 *
@@ -108,5 +118,6 @@ class DiceSetView(context: Context, attrs: AttributeSet) extends AdapterView[Dic
 			}
 		}
 	}
+	
 }
 

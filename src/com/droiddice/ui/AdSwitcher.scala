@@ -25,7 +25,11 @@ class AdSwitcher(fragment: FragmentViewFinder) extends AdListener {
 	    
 	def configure(variant: String) {
         Log.d(TAG, "adView from " + R.id.ad_view + " is " + adView)
-		adView.setAdListener(this)
+        if (variant.equals("lite")) {
+        	adView.setAdListener(this)
+        } else {
+            adArea.setVisibility(View.INVISIBLE)
+        }
 	}
 	
 	def onReceiveAd(ad: Ad) {

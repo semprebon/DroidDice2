@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@anim/shake_cycle">
+    <translate android:fromXDelta="0%" android:fromYDelta="0%" android:toXDelta="9%" android:toYDelta="-3%"
+        android:duration="100" android:startOffset="0"/>
+    <translate android:fromXDelta="9%" android:fromYDelta="-3%" android:toXDelta="-9%" android:toYDelta="9%"
+        android:duration="100" android:startOffset="100"/>
+    <translate android:fromXDelta="-9%" android:fromYDelta="9%" android:toXDelta="6%" android:toYDelta="-9%"
+        android:duration="100" android:startOffset="200"/>
+    <translate android:fromXDelta="6%" android:fromYDelta="-9%" android:toXDelta="3%" android:toYDelta="9%"
+        android:duration="100" android:startOffset="300"/>
+    <translate android:fromXDelta="3%" android:fromYDelta="9%" android:toXDelta="-9%" android:toYDelta="-6%"
+        android:duration="100" android:startOffset="400"/>
+   <translate android:fromXDelta="-9%" android:fromYDelta="-6%" android:toXDelta="0%" android:toYDelta="0%"
+        android:duration="100" android:startOffset="500"/>
+   <rotate
+        android:fromDegrees="0" 
+        android:toDegrees="360"
+        android:pivotX="50%" android:pivotY="50%"
+        android:duration="600"/>
+</set>

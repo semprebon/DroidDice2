@@ -106,10 +106,10 @@
 	<target name="-fix-manifest-for-variants">
 		<echo message="Fixing manifest for ${variant}" />
 		<replace file="AndroidManifest.xml" token="${variant.package.other}" value="${variant.package}" />
-		<replace file="AndroidManifest.xml" token="-- if ${variant.other} start --" value="if ${variant.other} start -?" />	
+		<replace file="AndroidManifest.xml" token="-- if ${variant.other} start --" value="-- if ${variant.other} start -?" />	
 		<replace file="AndroidManifest.xml" token="-- if ${variant.other} end --" value="-? if ${variant.other} end --" />	
 		<replace file="AndroidManifest.xml" token="-- if ${variant} start -?" value="-- if ${variant} start --" />	
-		<replace file="AndroidManifest.xml" token="-? if ${variant} end --" value="-- if ${variant} end -->" />	
+		<replace file="AndroidManifest.xml" token="-? if ${variant} end --" value="-- if ${variant} end --" />	
 	</target>
 	
 	<!-- Custom targets for running local (i.e., fast) model test

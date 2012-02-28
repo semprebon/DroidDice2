@@ -7,7 +7,9 @@
    	<ViewAnimator
 		android:id="@+id/roll_activity"
     	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent">
+    	android:layout_height="fill_parent"
+    	android:inAnimation="@anim/slide_in_right"
+    	android:outAnimation="@anim/slide_out_left">
 
        <fragment
            android:id="@+id/roll_fragment"

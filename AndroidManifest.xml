@@ -8,7 +8,7 @@
     <meta-data android:value="a14f4034cc8ec37" android:name="ADMOB_PUBLISHER_ID" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- if lite end -->>
+    <!-- if lite end -->
     <application android:label="@string/com.droiddice.lite.name" >
         <activity android:name=".ui.RollActivity">
             <intent-filter>

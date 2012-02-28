@@ -35,15 +35,18 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/dummy_name" />
-
+
     <TextView
         android:id="@+id/dice_result_text"
         style="@style/result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="@drawable/floating_touchable"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:text="@string/dummy_result" />
-
+
     <GridView
         android:id="@+id/dice_layout"
         style="@style/dice_grid"
@@ -52,7 +55,10 @@
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:layout_weight="0.10"
-        android:gravity="center" >
+        android:gravity="center"
+        android:horizontalSpacing="3dp"
+        android:verticalSpacing="3dp" >
+
     </GridView>
 
         <HorizontalScrollView
@@ -99,20 +105,14 @@
             style="@style/recent_pick_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_save" />
+            android:src="@drawable/ic_menu_save" />
 
         <ImageButton
-            android:id="@+id/dice_set_new_button"
-            style="@style/recent_pick_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add" />
-        <ImageButton
             android:id="@+id/dice_sets_selection_button"
             style="@style/recent_pick_button"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_more" />
+            android:src="@drawable/ic_menu_pick" />
 
     </LinearLayout>
 

@@ -54,7 +54,8 @@ class PickFragment extends ListFragment with FragmentViewFinder with LoaderManag
 	    		Log.d(TAG, "intent=" + intent)
 	    		Log.d(TAG, "diceSet=" + diceSet)
 	    		activity.changeDiceSet(new ObservableDiceSet(diceSet))
-	    		activity.showRollView()
+	    		activity.showRollFragment()
+	    		activity.rollDice()
 	    	}
 		})
 		registerForContextMenu(getListView())

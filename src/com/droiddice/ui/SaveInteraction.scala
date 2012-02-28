@@ -6,13 +6,16 @@ import android.view.KeyEvent
 import android.util.Log
 import com.droiddice.model._
 import com.droiddice.datastore._
+import android.view.animation.AnimationUtils
 
 /**
  * This class manages the saving of a dice set.
  */
 class SaveInteraction(activity: RollActivity) {
     
-	val TAG = "RollDiceActivity"
+    lazy val slideLeftAnimation = AnimationUtils.loadAnimation(activity, R.anim.slide_out_right)
+	 
+	val TAG = "SaveInteraction"
 
 	/**
      * Construct save dialog
@@ -29,17 +32,21 @@ class SaveInteraction(activity: RollActivity) {
 	 */
 	def prepare(dialog: Dialog) {
 	    val nameEdit = dialog.findViewById(R.id.save_name_edit).asInstanceOf[EditText]
+	    val originalName = activity.diceSet.customName
 	    nameEdit.setText(activity.diceSet.name)
 
 	    nameEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-	    	override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
-    	    	activity.diceSet.customName = nameEdit.getText().toString()
-	    	    if (activity.diceSet.isSaved) {
+	        override def onEditorAction(view: TextView, actionId: Int, event: KeyEvent): Boolean = {
+	    	    val newName = nameEdit.getText().toString()
+	    	    activity.diceSet.customName = newName
+	    	    activity.animateDiceSet(slideLeftAnimation)
+	    	    if (newName.equals(originalName) && activity.diceSet.isSaved) {
 	    	    	activity.dataStore.update(activity.diceSet, after)
 	    	    } else {
 	    	    	activity.dataStore.create(activity.diceSet, after)
 	    	    }
 	    		dialog.dismiss()
+	    		
 	    		false
 	    	}})
 	}
@@ -63,7 +70,7 @@ class SaveInteraction(activity: RollActivity) {
 		if (!activity.diceSet.isSaved) {
 		    Log.e(TAG, "setting id of newly saved dice set " + id)
 	       	activity.diceSet = new ObservableDiceSet(new SavedDiceSet(activity.diceSet, id))
-	       	activity.showRollView()
+	       	activity.showRollFragment()
 		}
 	}
 
