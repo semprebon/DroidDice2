@@ -1,4 +1,6 @@
 bin/*
+libs/*
+test/lib/*
 *.log
 proguard.cfg
 local.properties
