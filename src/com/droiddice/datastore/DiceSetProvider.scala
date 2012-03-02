@@ -36,13 +36,13 @@ object DiceSetProvider {
 
 	def variantForContext(context: Context): String = {
         context.getPackageName() match {
-            case "com.droiddice.lite" => return "lite"
-            case _ => return "pro"
+            case "com.droiddice.pro" => return ".pro"
+            case _ => return ""
         }
     }
     
 	def contentUri(context: Context) = {
-        Uri.parse("content://com.droiddice." + variantForContext(context) + ".dicesetprovider")
+        Uri.parse("content://com.droiddice" + variantForContext(context) + ".dicesetprovider")
     }
     
 	def uriFor(context: Context, id: Long) = Uri.withAppendedPath(contentUri(context), "diceset/" + id.toString())

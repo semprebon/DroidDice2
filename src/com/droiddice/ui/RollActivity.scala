@@ -67,7 +67,8 @@ class RollActivity extends FragmentActivity with FragmentActivityViewFinder {
   	
   	def variant = {
   	    val name = this.getPackageName()
-  	    name.substring(name.lastIndexOf(".")+1)
+  	    val innerPackage = name.substring(name.lastIndexOf(".")+1)
+  	    if (innerPackage.equals("droiddice")) "lite" else innerPackage
   	}
   	
 	/** Called when the activity is first created. */

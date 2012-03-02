@@ -91,14 +91,15 @@
 
 	<target name="pro" description="Create pro variant">
 		<property name="variant" value="pro" />
+		<property name="variant.other" value="lite" />
+		<property name="variant.package" value="${variant.package.base}.${variant}" />
+		<property name="variant.package.other" value="${variant.package.base}" />
 	</target>
 	
 	<target name="-set-variant">
 		<property name="variant" value="lite" />
-		<condition property="variant.other" value="pro" else="lite">
-			<equals arg1="${variant}" arg2="lite" />
-		</condition>
-		<property name="variant.package" value="${variant.package.base}.${variant}" />
+		<property name="variant.other" value="pro" />
+		<property name="variant.package" value="${variant.package.base}" />
 		<property name="variant.package.other" value="${variant.package.base}.${variant.other}" />
 	</target>
 	
