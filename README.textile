@@ -1,0 +1,35 @@
+h1. DroidDice2
+
+DroidDice2 is a dice rolling application for Android devices. Features include:
+
+* Multiple die types (d4, d6, d8, d10, d12, d20)
+* Exploding dice (as in Savage Worlds
+* Save commonly used sets  of dice
+
+I wrote DroidDice2 as a demonstration project to see how effectively Scala could be used as a programming language for
+Android projects. It is based on my java project, DroidDice:https://play.google.com/store/apps/details?id=com.droiddice&hl=en,
+but updates the user interface to take advantage of some of the new features of Android 4.0.
+
+h2. Compiling
+
+DroidDice2 was developed with eclispe, and uses the standard ADK tooling. I generally compile using the command line
+with Ant.
+ 
+h2. License
+
+DroidDice2 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+DroidDice2 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with DroidDice2.  If not, see <http://www.gnu.org/licenses/>.
+    
+
+    To get started, you need to create a file named system.properties in the base directory that tells ant where
+the android SDK is
